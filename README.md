@@ -79,3 +79,16 @@ Je peux vous aider à faire cette intégration si besoin.
 - [Leaflet](https://leafletjs.com) + [React-Leaflet](https://react-leaflet.js.org)
 - [OpenStreetMap](https://www.openstreetmap.org) (tuiles gratuites)
 - [Nominatim](https://nominatim.openstreetmap.org) (géocodage gratuit)
+
+---
+
+## 🏢 Agent immobilier — recherche du futur local
+
+Un agent Claude Code cherche et suit les locaux à louer pour le cabinet : environ 200 m², 3 500 €/mois maximum tout inclus, à Blagnac, Seilh ou Beauzelle.
+
+- `immobilier/criteres.md` — cahier des charges et grille de notation (à modifier selon vos besoins)
+- `immobilier/annonces.md` — suivi des annonces trouvées, notées et commentées
+- `.claude/agents/agent-immobilier.md` — définition de l'agent
+
+Utilisation dans Claude Code : « Utilise l'agent-immobilier pour chercher de nouvelles annonces »,
+« Analyse cette annonce : <lien> » ou « Prépare un mail pour l'agence de la piste n°1 ».
