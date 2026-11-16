@@ -633,6 +633,10 @@ dash.draw("n-best", (el) => kvSyn("moins_cher", el, KV.eur));
       tot.append(document.createTextNode("Coût mensuel total avec taxe foncière et charges" + (v.charges_estimees ? " (estimées)" : "") + " : ≈ "),
         mark(mk("b", null, KV.eur(calc.cout_mensuel_total)), "ventes_calc", v.id, "cout_mensuel_total"),
         document.createTextNode(" · emprunt "), mark(mk("span", null, KV.eur(calc.emprunt)), "ventes_calc", v.id, "emprunt"));
+      if (v.taxe_fonciere_an != null) {
+        tot.append(document.createTextNode(" · dont taxe foncière "), mark(mk("span", null, KV.eur(v.taxe_fonciere_an)), "ventes", v.id, "taxe_fonciere_an"),
+          document.createTextNode("/an" + (v.charges_estimees ? " (estimée)" : "")));
+      }
       price.append(tot);
     }
     if (!price.contains(main)) price.prepend(main);
@@ -835,7 +839,7 @@ dash.draw("n-best", (el) => kvSyn("moins_cher", el, KV.eur));
       "Relevé du " + (d ? KV.fmtDate(d) : m.semaine) + " pour " + m.surface_ref + " m².",
       "Loyer de marché : " + m.loyer_m2_an_ht + " €/m²/an HT, charges et taxe foncière " + m.charges_loc_m2_an_ht + " €/m²/an HT" + (m.tva_loyer ? ", TVA de 20 % non récupérable." : "."),
       "Prix de vente de marché : " + KV.eur(m.prix_m2) + "/m², frais de notaire " + Math.round(m.frais_notaire_pct * 100) + " %, apport " + KV.eur(h.apport || 0) + ", prêt SCI sur " + h.duree_ans + " ans à " + pct(m.taux) + " + assurance " + pct(h.assurance) + ".",
-      "Taxe foncière et charges côté achat : " + KV.eur(m.annexes_achat_mensuelles) + " par mois. Loyer et charges indexés de " + pct(m.indexation_loyer) + " par an ; revalorisation du local : " + pct(m.revalorisation_bien) + " par an.",
+      "Taxe foncière (≈ 20 €/m²/an, ordures ménagères comprises) et charges de copropriété côté achat : " + KV.eur(m.annexes_achat_mensuelles) + " par mois. Côté location, la taxe foncière est refacturée au locataire et comprise dans les charges. Loyer et charges indexés de " + pct(m.indexation_loyer) + " par an ; revalorisation du local : " + pct(m.revalorisation_bien) + " par an.",
       "Sources : " + m.sources
     ].forEach((t) => { const li = document.createElement("li"); li.textContent = t; el.append(li); });
   });
