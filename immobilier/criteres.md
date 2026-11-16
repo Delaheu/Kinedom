@@ -63,3 +63,11 @@
 | Hypothèses (nov. 2026) | Taux 3,75 % hors assurance, assurance 0,30 %/an, frais de notaire 8 % (ancien) ou 3 % (neuf) financés, **apport des associés 40 000 €** |
 | Prix maximum (apport 40 000 €) | ≈ 561 000 € si seule la mensualité de prêt compte ; ≈ 486 000 € si les 3 500 € doivent aussi couvrir taxe foncière et charges (~500 €/mois) |
 | Structure | **Décidé : achat par une SCI des associés**, qui loue les murs à la SCM du cabinet. Le prêt est au nom de la SCI ; le loyer SCM → SCI couvre la mensualité. Points à caler avec l'expert-comptable : SCI à l'IR ou à l'IS, répartition des parts entre les 9 kinés, caution des associés, loyer SCM → SCI, sortie d'un associé |
+
+## Stratégie : louer ou acheter
+
+- Règle : les dépenses de locaux de Kops ne dépassent pas **3 500 € TTC par mois, charges incluses**.
+- Chaque lundi, l'agent relève les prix du marché (loyer et prix de vente au m², taux de crédit) dans `immobilier/dashboard/marche.json`. Le volet « Stratégie » du tableau de bord compare alors, pour 200 m² :
+  - location = (loyer + charges et taxe foncière) × 200 m² × 1,2 de TVA ;
+  - achat par la SCI = prêt sur (prix × 200 m² × 1,08 − 40 000 € d'apport) + environ 500 € par mois de taxe foncière et charges.
+- Il en tire la tendance semaine après semaine, le coût net de chaque option sur 20 ans et une recommandation.

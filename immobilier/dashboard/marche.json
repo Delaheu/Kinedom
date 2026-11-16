@@ -1,0 +1,13 @@
+{
+  "rows": [
+    {"semaine": "2026-11-16", "surface_ref": 200,
+     "loyer_m2_an_ht": 160, "charges_loc_m2_an_ht": 28, "tva_loyer": true, "indexation_loyer": 0.02,
+     "prix_m2": 2000, "frais_notaire_pct": 0.08, "annexes_achat_mensuelles": 500, "revalorisation_bien": 0,
+     "taux": 0.0375,
+     "sources": "Loyers : bureaux Blagnac ≈ 130 €/m²/an HT HC (UnEmplacement, 196 annonces), locaux commerciaux 172–199 €/m²/an (LoopNet, Kazba, UnEmplacement) → 160 €/m²/an retenu pour un local professionnel. Prix de vente : murs commerciaux Blagnac ≈ 1 970–2 500 €/m² (Kazba/DVF, BureauxLocaux, LeSiteImmo, en baisse de 5,4 % sur un an), Beauzelle ≈ 1 160–1 760 €/m² (UnEmplacement) → 2 000 €/m² retenu. Taux 20 ans : 3,69–3,80 % (Meilleurtaux, CAFPI, Vousfinancer)."}
+  ],
+  "meta": [
+    {"label": "Méthode", "value": "Une ligne par semaine : prix de marché de la zone Blagnac / Seilh / Beauzelle relevés par l'agent immobilier. Les coûts sont calculés pour 200 m²."},
+    {"label": "Prudence", "value": "Loyer avec TVA (la plupart des bailleurs de locaux professionnels optent pour la TVA, non récupérable par Kops). Achat sans revalorisation du bien."}
+  ]
+}

@@ -65,6 +65,27 @@
 .kv-tab[aria-selected="true"] { color: var(--color-fg); border-bottom-color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
 .kv-tab:focus-visible { outline: 2px solid var(--color-fg); outline-offset: -2px; }
 .kv-page { display: grid; gap: var(--cds-gap-xl); }
+.kv-verdict { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: grid; gap: var(--cds-gap-sm); border-left: 4px solid var(--color-fg-muted); }
+.kv-verdict.is-achat, .kv-verdict.is-location { border-left-color: var(--color-ok); }
+.kv-verdict.is-equilibre { border-left-color: var(--color-warn); }
+.kv-verdict.is-hors_budget { border-left-color: var(--color-bad); }
+.kv-verdict-title { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
+.kv-verdict-text { margin: 0; line-height: 1.6; max-width: 75ch; }
+.kv-verdict-text b { font-variant-numeric: tabular-nums; }
+.kv-chart { position: relative; min-height: 260px; }
+.kv-chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.kv-chart .tick text { fill: var(--cds-text-secondary); font-size: var(--cds-font-size-caption); font-family: var(--font-anthropic-sans); }
+.kv-chart .tick line { stroke: var(--cds-chart-grid); }
+.kv-chart .domain { stroke: var(--cds-chart-axis); }
+.kv-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: 0 0 var(--cds-gap-sm); padding: 0; list-style: none; }
+.kv-legend li { display: flex; align-items: center; gap: 6px; }
+.kv-legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; }
+.kv-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: var(--cds-radius); padding: 8px 10px; font-size: var(--cds-font-size-caption); line-height: 1.5; white-space: nowrap; z-index: 2; }
+.kv-tip b { font-variant-numeric: tabular-nums; }
+.kv-compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--cds-gap-md); }
+.kv-opt { border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-md); display: grid; gap: 4px; min-width: 0; background: var(--color-bg); }
+.kv-opt-label { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: 0; text-transform: uppercase; letter-spacing: .05em; }
+.kv-opt-title { margin: 0; font-weight: var(--cds-font-weight-medium); }
 .kv-sec-head { display: grid; gap: var(--cds-gap-xs); }
 .kv-sec-lead { margin: 0; color: var(--color-fg-muted); max-width: 75ch; line-height: 1.5; }
 .kv-simu { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--cds-gap-lg); align-items: start; }
@@ -82,6 +103,7 @@
     <div class="kv-tabs" role="tablist" aria-label="Pages">
       <button type="button" class="kv-tab" role="tab" id="tab-locations" data-tab="locations" aria-controls="locations" aria-selected="true">Locations</button>
       <button type="button" class="kv-tab" role="tab" id="tab-achats" data-tab="achats" aria-controls="achats" aria-selected="false">Achats</button>
+      <button type="button" class="kv-tab" role="tab" id="tab-strategie" data-tab="strategie" aria-controls="strategie" aria-selected="false">Stratégie</button>
     </div>
   </header>
 
@@ -184,6 +206,68 @@
     <div class="kv-cards" data-draw="vcards" data-source="ventes ventes_calc"></div>
   </section>
 
+  <section class="kv-page" id="strategie" role="tabpanel" aria-labelledby="tab-strategie" hidden>
+    <div class="kv-sec-head">
+      <h2 class="kv-h2">Stratégie : rester locataire ou devenir propriétaire ?</h2>
+      <p class="kv-sec-lead">Règle de Kops : les dépenses de locaux ne doivent pas dépasser <b data-draw="s-budget">—</b> TTC par mois, charges incluses. Chaque semaine, l'agent relève les prix du marché pour 200 m² dans la zone et compare les deux options.</p>
+    </div>
+
+    <div class="kv-verdict" id="verdict" data-draw="verdict-state" data-source="verdict">
+      <p class="kv-tile-label">Recommandation de la semaine</p>
+      <div data-verdict="achat" hidden>
+        <p class="kv-verdict-title">Devenir propriétaire via la SCI</p>
+        <p class="kv-verdict-text">Au prix du marché, acheter coûte <b data-draw="v-achat" data-source="verdict" data-field="achat_mensuel" data-row="0">—</b> par mois tout compris, contre <b data-draw="v-loc" data-source="verdict" data-field="location_mensuel" data-row="0">—</b> en location. L'achat devient plus avantageux que la location au bout d'environ <b data-draw="v-pm" data-source="verdict" data-field="point_mort_ans" data-row="0">—</b> an(s), et sur 20 ans il laisse à la SCI un local payé.</p>
+      </div>
+      <div data-verdict="location" hidden>
+        <p class="kv-verdict-title">Rester locataire</p>
+        <p class="kv-verdict-text">Au prix du marché, louer coûte <b data-draw="v-loc2" data-source="verdict" data-field="location_mensuel" data-row="0">—</b> par mois et reste dans le budget, alors que l'achat (<b data-draw="v-achat2" data-source="verdict" data-field="achat_mensuel" data-row="0">—</b> par mois) le dépasse ou met trop longtemps à devenir rentable.</p>
+      </div>
+      <div data-verdict="equilibre" hidden>
+        <p class="kv-verdict-title">Les deux options se valent</p>
+        <p class="kv-verdict-text">Location (<b data-draw="v-loc3" data-source="verdict" data-field="location_mensuel" data-row="0">—</b>) et achat (<b data-draw="v-achat3" data-source="verdict" data-field="achat_mensuel" data-row="0">—</b>) tiennent dans le budget avec des coûts proches : la décision dépend des annonces réelles et de votre horizon.</p>
+      </div>
+      <div data-verdict="hors_budget" hidden>
+        <p class="kv-verdict-title">Aucune option ne tient dans le budget au prix moyen</p>
+        <p class="kv-verdict-text">Au prix du marché, location (<b data-draw="v-loc4" data-source="verdict" data-field="location_mensuel" data-row="0">—</b>) et achat (<b data-draw="v-achat4" data-source="verdict" data-field="achat_mensuel" data-row="0">—</b>) dépassent le budget : il faut viser des annonces sous le prix moyen, ou une surface plus petite.</p>
+      </div>
+    </div>
+
+    <div class="kv-tiles" id="chiffres-strategie" aria-label="Comparaison au prix du marché">
+      <div class="kv-tile" id="tuile-s-loc"><p class="kv-tile-label">Location au prix du marché</p><p class="kv-tile-value" data-draw="s-loc" data-source="verdict" data-field="location_mensuel" data-row="0">—</p><p class="kv-tile-note">TTC par mois, charges et taxe foncière incluses</p></div>
+      <div class="kv-tile" id="tuile-s-achat"><p class="kv-tile-label">Achat au prix du marché</p><p class="kv-tile-value" data-draw="s-achat" data-source="verdict" data-field="achat_mensuel" data-row="0">—</p><p class="kv-tile-note">prêt SCI + taxe foncière + charges, par mois</p></div>
+      <div class="kv-tile" id="tuile-s-eco"><p class="kv-tile-label">Avantage de l'achat sur 20 ans</p><p class="kv-tile-value" data-draw="s-eco" data-source="verdict" data-field="avantage_achat_20_ans" data-row="0">—</p><p class="kv-tile-note">coût net, valeur du local déduite</p></div>
+      <div class="kv-tile" id="tuile-s-rdt"><p class="kv-tile-label">Rendement brut du marché</p><p class="kv-tile-value" data-draw="s-rdt" data-source="verdict" data-field="rendement_brut" data-row="0">—</p><p class="kv-tile-note" data-draw="s-rdt-note">—</p></div>
+    </div>
+
+    <div class="kv-week" id="tendance">
+      <h3 class="kv-h2">Tendance : coût mensuel pour 200 m², semaine après semaine</h3>
+      <p class="kv-hyp">Location au prix du marché, achat au prix du marché, et la limite de budget. Une nouvelle mesure s'ajoute chaque lundi.</p>
+      <div class="kv-chart" data-draw="chart-trend" data-source="strategie_semaines"></div>
+    </div>
+
+    <div class="kv-week" id="projection">
+      <h3 class="kv-h2">Ce que coûte chaque option sur 20 ans</h3>
+      <p class="kv-hyp">Total payé depuis l'emménagement. Pour l'achat, on déduit la part du local qui appartient déjà à la SCI (valeur du bien moins capital restant dû) : la courbe d'achat part donc des frais de notaire.</p>
+      <div class="kv-chart" data-draw="chart-proj" data-source="projection"></div>
+    </div>
+
+    <div class="kv-week" id="sur-vos-annonces">
+      <h3 class="kv-h2">Sur vos annonces réelles</h3>
+      <p class="kv-hyp">Meilleure location et meilleur achat parmi les annonces suivies qui ne sont pas écartées, au coût mensuel tout compris.</p>
+      <div class="kv-compare" data-draw="compare" data-source="strategie_annonces"></div>
+    </div>
+
+    <details class="kv-notes" id="hypotheses-strategie">
+      <summary>Hypothèses et limites du calcul</summary>
+      <ul data-draw="s-hyp"></ul>
+      <ul>
+        <li>Non pris en compte : fiscalité de la SCI (impôt sur le revenu ou sur les sociétés, amortissement), travaux d'aménagement (similaires dans les deux cas), revente avec plus-value ou moins-value, vacance si un associé part.</li>
+        <li>Le prix du marché est une moyenne de la zone : les annonces réelles peuvent être nettement au-dessus ou en dessous. La section « Sur vos annonces réelles » sert à le vérifier.</li>
+        <li>Cette comparaison aide à décider, elle ne remplace pas l'avis de votre expert-comptable et d'un courtier.</li>
+      </ul>
+    </details>
+  </section>
+
   <details class="kv-notes" id="methode">
     <summary>Comment le prix TTC est estimé</summary>
     <ul>
@@ -191,6 +275,7 @@
       <li>On ajoute les charges et la taxe foncière refacturée quand l'annonce ne les inclut pas. Si elles ne sont pas connues, on donne une fourchette (environ 2 à 3 € HT par m² et par mois).</li>
       <li>Une annonce est « dans le budget » quand le haut de sa fourchette ne dépasse pas le budget.</li>
       <li>Achat : mensualité = crédit amortissable sur 20 ans au taux retenu, plus l'assurance emprunteur. Le montant emprunté inclut le prix, les honoraires en sus et les frais de notaire (8 % dans l'ancien, 3 % dans le neuf), moins l'apport des associés (40 000 €). Le coût mensuel total ajoute la taxe foncière et les charges de copropriété.</li>
+      <li>Stratégie : location au prix du marché = (loyer + charges et taxe foncière) × 200 m² × 1,2 de TVA ; achat au prix du marché = prêt de la SCI (prix × 200 m² + 8 % de notaire − apport) + taxe foncière et charges. Sur 20 ans, le loyer est indexé de 2 % par an et le local n'est pas revalorisé (hypothèse prudente).</li>
       <li>Les données viennent des résultats de recherche web. Chaque montant reste à confirmer auprès de l'agence avant une visite.</li>
     </ul>
   </details>
@@ -590,7 +675,7 @@ dash.draw("n-best", (el) => kvSyn("moins_cher", el, KV.eur));
 
 <script>
 (function () {
-  const pages = ["locations", "achats"];
+  const pages = ["locations", "achats", "strategie"];
   function open(name) {
     if (!pages.includes(name)) name = "locations";
     document.querySelectorAll(".kv-page").forEach((p) => { p.hidden = p.id !== name; });
@@ -629,5 +714,234 @@ dash.draw("n-best", (el) => kvSyn("moins_cher", el, KV.eur));
   dash.draw("v-ok", (el) => syn("sous_plafond", el));
   dash.draw("v-new", (el) => syn("nouvelles", el));
   dash.draw("v-best", (el) => syn("plus_basse", el, KV.eur));
+})();
+</script>
+
+<script>
+(function () {
+  const lastRow = (rows) => rows.slice().sort((a, b) => d3.ascending(a.semaine, b.semaine))[rows.length - 1];
+
+  dash.calc("strategie_semaines", {
+    title: "Coût mensuel location vs achat, par semaine",
+    description: "Pour chaque relevé hebdomadaire du marché : coût mensuel TTC d'une location de 200 m² et coût mensuel d'un achat de 200 m² par la SCI (prêt + taxe foncière + charges).",
+    inputs: ["marche", "hypotheses"],
+    fn: (marche, hypotheses) => {
+      const h = hypotheses[0];
+      if (!h) return [];
+      return marche.slice().sort((a, b) => d3.ascending(a.semaine, b.semaine)).map((m) => {
+        const S = m.surface_ref;
+        const location_mensuel = Math.round((m.loyer_m2_an_ht + m.charges_loc_m2_an_ht) * S / 12 * (m.tva_loyer ? 1.2 : 1));
+        const prix = m.prix_m2 * S;
+        const emprunt = Math.max(0, prix * (1 + m.frais_notaire_pct) - (h.apport || 0));
+        const r = m.taux / 12, n = h.duree_ans * 12;
+        const pret = emprunt * (r / (1 - Math.pow(1 + r, -n)) + h.assurance / 12);
+        return { semaine: m.semaine, location_mensuel, achat_mensuel: Math.round(pret + m.annexes_achat_mensuelles), pret_mensuel: Math.round(pret), prix_bien: prix, rendement_brut: m.loyer_m2_an_ht / m.prix_m2, taux: m.taux };
+      });
+    }
+  });
+
+  dash.calc("projection", {
+    title: "Coût net cumulé sur 20 ans",
+    description: "Année par année, à partir du dernier relevé du marché : total des loyers TTC (indexés) d'un côté ; de l'autre apport + mensualités + taxe foncière et charges, moins la part du local détenue par la SCI (valeur du bien − capital restant dû).",
+    inputs: ["marche", "hypotheses"],
+    fn: (marche, hypotheses) => {
+      const h = hypotheses[0];
+      if (!h || !marche.length) return [];
+      const m = marche.slice().sort((a, b) => d3.ascending(a.semaine, b.semaine))[marche.length - 1];
+      const S = m.surface_ref, prix = m.prix_m2 * S;
+      const loc0 = (m.loyer_m2_an_ht + m.charges_loc_m2_an_ht) * S / 12 * (m.tva_loyer ? 1.2 : 1);
+      const emprunt = Math.max(0, prix * (1 + m.frais_notaire_pct) - (h.apport || 0));
+      const r = m.taux / 12, n = h.duree_ans * 12;
+      const credit = emprunt * r / (1 - Math.pow(1 + r, -n));
+      const assurance = emprunt * h.assurance / 12;
+      let restant = emprunt, cumLoc = 0, cumAchat = h.apport || 0;
+      const out = [{ annee: 0, location_cumul: 0, achat_net: Math.round(cumAchat - (prix - restant)) }];
+      for (let mo = 1; mo <= n; mo++) {
+        const y = Math.floor((mo - 1) / 12);
+        cumLoc += loc0 * Math.pow(1 + m.indexation_loyer, y);
+        cumAchat += credit + assurance + m.annexes_achat_mensuelles * Math.pow(1 + m.indexation_loyer, y);
+        restant = restant * (1 + r) - credit;
+        if (mo % 12 === 0) {
+          const valeur = prix * Math.pow(1 + m.revalorisation_bien, mo / 12);
+          out.push({ annee: mo / 12, location_cumul: Math.round(cumLoc), achat_net: Math.round(cumAchat - (valeur - Math.max(0, restant))) });
+        }
+      }
+      return out;
+    }
+  });
+
+  dash.calc("verdict", {
+    title: "Recommandation louer / acheter",
+    description: "Dernier relevé : coûts mensuels, année à partir de laquelle l'achat coûte moins cher que la location, avantage net de l'achat sur 20 ans, et recommandation selon la règle des 3 500 € TTC par mois.",
+    inputs: ["strategie_semaines", "projection", "hypotheses"],
+    fn: (semaines, projection, hypotheses) => {
+      const h = hypotheses[0];
+      if (!h || !Array.isArray(semaines) || !semaines.length || !Array.isArray(projection) || !projection.length) return [];
+      const s = semaines[semaines.length - 1];
+      const budget = h.plafond_mensuel;
+      const pm = projection.find((p) => p.annee > 0 && p.achat_net <= p.location_cumul);
+      const fin = projection[projection.length - 1];
+      const point_mort_ans = pm ? pm.annee : null;
+      const locOk = s.location_mensuel <= budget, achatOk = s.achat_mensuel <= budget;
+      let strategie;
+      if (!locOk && !achatOk) strategie = "hors_budget";
+      else if (achatOk && point_mort_ans != null && point_mort_ans <= 7 && s.achat_mensuel <= s.location_mensuel * 1.05) strategie = "achat";
+      else if (locOk && (!achatOk || point_mort_ans == null || point_mort_ans > 12)) strategie = "location";
+      else strategie = "equilibre";
+      return [{ semaine: s.semaine, strategie, location_mensuel: s.location_mensuel, achat_mensuel: s.achat_mensuel, point_mort_ans, avantage_achat_20_ans: fin.location_cumul - fin.achat_net, rendement_brut: s.rendement_brut, taux: s.taux }];
+    }
+  });
+
+  dash.calc("strategie_annonces", {
+    title: "Meilleures options parmi vos annonces",
+    description: "Location la moins chère (haut de fourchette TTC) et achat le moins cher (coût mensuel total) parmi les annonces suivies non écartées.",
+    inputs: ["annonces", "ventes", "ventes_calc"],
+    fn: (annonces, ventes, calc) => {
+      const out = [];
+      const locs = annonces.filter((a) => a.statut !== "Écartée" && a.ttc_max != null);
+      if (locs.length) { const b = locs.reduce((m, a) => (a.ttc_max < m.ttc_max ? a : m)); out.push({ option: "location", id: b.id, titre: b.titre, commune: b.commune, surface_m2: b.surface_m2, cout_mensuel: b.ttc_max, lien: b.lien }); }
+      const byId = new Map((Array.isArray(calc) ? calc : []).map((c) => [c.id, c]));
+      const achats = ventes.filter((v) => v.statut !== "Écartée" && byId.get(v.id) && byId.get(v.id).cout_mensuel_total != null);
+      if (achats.length) { const b = achats.reduce((m, v) => (byId.get(v.id).cout_mensuel_total < byId.get(m.id).cout_mensuel_total ? v : m)); out.push({ option: "achat", id: b.id, titre: b.titre, commune: b.commune, surface_m2: b.surface_m2, cout_mensuel: byId.get(b.id).cout_mensuel_total, lien: b.lien }); }
+      return out;
+    }
+  });
+
+  const V = () => { const q = dash.data("verdict"); return q.status === "ok" && Array.isArray(q.data) && q.data[0] ? q.data[0] : null; };
+  const H = () => { const q = dash.data("hypotheses"); return q.status === "ok" && q.data[0] ? q.data[0] : null; };
+  const pct = (v) => d3.format(".1f")(v * 100).replace(".", ",") + " %";
+
+  dash.draw("s-budget", (el) => { const h = H(); el.textContent = KV.eur(h ? h.plafond_mensuel : window.KV_BUDGET); });
+  dash.draw("verdict-state", (el) => {
+    const v = V();
+    ["achat", "location", "equilibre", "hors_budget"].forEach((k) => el.classList.toggle("is-" + k, !!v && v.strategie === k));
+    el.querySelectorAll("[data-verdict]").forEach((b) => { b.hidden = !v || b.getAttribute("data-verdict") !== v.strategie; });
+  });
+  const num = (name, field, fmt) => dash.draw(name, (el) => { const v = V(); el.textContent = v && v[field] != null ? fmt(v[field]) : "—"; });
+  ["v-achat", "v-achat2", "v-achat3", "v-achat4", "s-achat"].forEach((n) => num(n, "achat_mensuel", KV.eur));
+  ["v-loc", "v-loc2", "v-loc3", "v-loc4", "s-loc"].forEach((n) => num(n, "location_mensuel", KV.eur));
+  num("v-pm", "point_mort_ans", String);
+  num("s-eco", "avantage_achat_20_ans", KV.eur);
+  num("s-rdt", "rendement_brut", pct);
+  dash.draw("s-rdt-note", (el) => { const v = V(); el.textContent = v ? "loyer annuel ÷ prix ; taux du crédit " + pct(v.taux) : "—"; });
+
+  dash.draw("s-hyp", (el) => {
+    el.replaceChildren();
+    const q = dash.data("marche"), h = H();
+    if (q.status !== "ok" || !q.data.length || !h) return;
+    const m = lastRow(q.data);
+    const d = KV.parse(m.semaine);
+    [
+      "Relevé du " + (d ? KV.fmtDate(d) : m.semaine) + " pour " + m.surface_ref + " m².",
+      "Loyer de marché : " + m.loyer_m2_an_ht + " €/m²/an HT, charges et taxe foncière " + m.charges_loc_m2_an_ht + " €/m²/an HT" + (m.tva_loyer ? ", TVA de 20 % non récupérable." : "."),
+      "Prix de vente de marché : " + KV.eur(m.prix_m2) + "/m², frais de notaire " + Math.round(m.frais_notaire_pct * 100) + " %, apport " + KV.eur(h.apport || 0) + ", prêt SCI sur " + h.duree_ans + " ans à " + pct(m.taux) + " + assurance " + pct(h.assurance) + ".",
+      "Taxe foncière et charges côté achat : " + KV.eur(m.annexes_achat_mensuelles) + " par mois. Loyer et charges indexés de " + pct(m.indexation_loyer) + " par an ; revalorisation du local : " + pct(m.revalorisation_bien) + " par an.",
+      "Sources : " + m.sources
+    ].forEach((t) => { const li = document.createElement("li"); li.textContent = t; el.append(li); });
+  });
+
+  function lineChart(el, opts) {
+    const q = dash.data(opts.source);
+    el.replaceChildren();
+    if (q.status === "loading") { el.classList.add("dash-skeleton"); return; }
+    el.classList.remove("dash-skeleton");
+    if (q.status !== "ok" || !Array.isArray(q.data) || !q.data.length) { const p = document.createElement("p"); p.className = "kv-fail"; p.textContent = q.status === "error" ? "Échec du chargement" : "—"; el.append(p); return; }
+    const rows = q.data;
+    const legend = document.createElement("ul"); legend.className = "kv-legend";
+    opts.series.forEach((s) => { const li = document.createElement("li"); const i = document.createElement("i"); i.style.background = s.color; if (s.dashed) i.style.background = "repeating-linear-gradient(90deg," + s.color + " 0 4px,transparent 4px 7px)"; li.append(i, document.createTextNode(s.label)); legend.append(li); });
+    el.append(legend);
+    const W = Math.max(280, el.clientWidth || 600), Hh = 240;
+    const vals = rows.flatMap((r) => opts.series.filter((s) => !s.constant).map((s) => r[s.key])).concat(opts.series.filter((s) => s.constant != null).map((s) => s.constant));
+    const y = d3.scaleLinear().domain([Math.min(0, d3.min(vals)), d3.max(vals) * 1.1]).nice();
+    const svg = d3.select(el).append("svg").attr("viewBox", "0 0 " + W + " " + Hh).attr("role", "img").attr("aria-label", opts.aria);
+    const tmp = svg.append("g").selectAll("text").data(y.ticks(5)).join("text").style("font-size", "12px").text((d) => opts.yfmt(d));
+    let ml = 0; tmp.each(function () { ml = Math.max(ml, this.getComputedTextLength()); }); tmp.remove();
+    const M = { t: 10, r: 16, b: 28, l: Math.ceil(ml) + 14 };
+    const x = opts.xScale(rows).range([M.l, W - M.r]);
+    y.range([Hh - M.b, M.t]);
+    svg.append("g").attr("transform", "translate(0," + (Hh - M.b) + ")").call(opts.xAxis(x).tickSizeOuter(0));
+    svg.append("g").attr("transform", "translate(" + M.l + ",0)").call(d3.axisLeft(y).ticks(5).tickFormat(opts.yfmt).tickSize(-(W - M.l - M.r))).call((g) => g.select(".domain").remove()).call((g) => g.selectAll(".tick line").attr("stroke-opacity", 0.6));
+    opts.series.forEach((s) => {
+      if (s.constant != null) {
+        svg.append("line").attr("x1", M.l).attr("x2", W - M.r).attr("y1", y(s.constant)).attr("y2", y(s.constant)).style("stroke", s.color).attr("stroke-width", 1.5).attr("stroke-dasharray", "5 4");
+        return;
+      }
+      svg.append("path").datum(rows).attr("fill", "none").style("stroke", s.color).attr("stroke-width", 2.5).attr("d", d3.line().x((r) => x(opts.x(r))).y((r) => y(r[s.key])));
+      svg.append("g").selectAll("circle").data(rows.length <= 30 ? rows : [rows[rows.length - 1]]).join("circle").attr("cx", (r) => x(opts.x(r))).attr("cy", (r) => y(r[s.key])).attr("r", rows.length === 1 ? 5 : 3).style("fill", s.color);
+    });
+    const tip = document.createElement("div"); tip.className = "kv-tip"; tip.hidden = true; el.append(tip);
+    const guide = svg.append("line").attr("y1", M.t).attr("y2", Hh - M.b).style("stroke", "var(--cds-chart-reference)").attr("stroke-width", 1).attr("visibility", "hidden");
+    svg.append("rect").attr("x", M.l).attr("y", M.t).attr("width", W - M.l - M.r).attr("height", Hh - M.t - M.b).attr("fill", "transparent")
+      .on("pointermove", (ev) => {
+        const [px] = d3.pointer(ev);
+        let best = rows[0], bd = Infinity;
+        rows.forEach((r) => { const dd = Math.abs(x(opts.x(r)) - px); if (dd < bd) { bd = dd; best = r; } });
+        guide.attr("x1", x(opts.x(best))).attr("x2", x(opts.x(best))).attr("visibility", "visible");
+        tip.replaceChildren();
+        const t = document.createElement("div"); t.textContent = opts.tipTitle(best); tip.append(t);
+        opts.series.filter((s) => s.constant == null).forEach((s) => { const l = document.createElement("div"); const b = document.createElement("b"); b.textContent = opts.yfmt(best[s.key]); l.append(document.createTextNode(s.label + " : "), b); tip.append(l); });
+        tip.hidden = false;
+        const box = el.getBoundingClientRect(), sc = box.width / W;
+        let left = x(opts.x(best)) * sc + 12; if (left + tip.offsetWidth > box.width) left = x(opts.x(best)) * sc - tip.offsetWidth - 12;
+        tip.style.left = Math.max(0, left) + "px"; tip.style.top = (legend.offsetHeight + M.t) + "px";
+      })
+      .on("pointerleave", () => { tip.hidden = true; guide.attr("visibility", "hidden"); });
+  }
+
+  const kfmt = (v) => d3.format(",.0f")(v).replace(/,/g, " ") + " €";
+  dash.draw("chart-trend", (el) => {
+    const h = H();
+    lineChart(el, {
+      source: "strategie_semaines", aria: "Coût mensuel de la location et de l'achat de 200 m² au prix du marché, par semaine, comparé au budget",
+      x: (r) => KV.parse(r.semaine),
+      xScale: (rows) => { const ext = d3.extent(rows, (r) => KV.parse(r.semaine)); if (+ext[0] === +ext[1]) { ext[0] = d3.utcDay.offset(ext[0], -7); ext[1] = d3.utcDay.offset(ext[1], 7); } return d3.scaleUtc().domain(ext); },
+      xAxis: (x) => d3.axisBottom(x).ticks(Math.max(2, Math.floor((el.clientWidth || 600) / 110))).tickFormat(d3.utcFormat("%d/%m")),
+      yfmt: kfmt,
+      tipTitle: (r) => "Semaine du " + KV.fmtDate(KV.parse(r.semaine)),
+      series: [
+        { key: "location_mensuel", label: "Location (TTC tout compris)", color: dash.colors[0] },
+        { key: "achat_mensuel", label: "Achat SCI (prêt + taxe foncière + charges)", color: dash.colors[1] },
+        { constant: h ? h.plafond_mensuel : window.KV_BUDGET, label: "Budget", color: "var(--cds-chart-status-critical)", dashed: true }
+      ]
+    });
+  });
+  dash.draw("chart-proj", (el) => {
+    lineChart(el, {
+      source: "projection", aria: "Coût net cumulé de la location et de l'achat sur 20 ans",
+      x: (r) => r.annee,
+      xScale: () => d3.scaleLinear().domain([0, 20]),
+      xAxis: (x) => d3.axisBottom(x).ticks(5).tickFormat((d) => d + " an" + (d > 1 ? "s" : "")),
+      yfmt: (v) => Math.abs(v) >= 1000 ? d3.format(",.0f")(v / 1000).replace(/,/g, " ") + " k€" : kfmt(v),
+      tipTitle: (r) => "Après " + r.annee + " an" + (r.annee > 1 ? "s" : ""),
+      series: [
+        { key: "location_cumul", label: "Location : total des loyers", color: dash.colors[0] },
+        { key: "achat_net", label: "Achat : total payé − part du local détenue", color: dash.colors[1] }
+      ]
+    });
+  });
+
+  dash.draw("compare", (el) => {
+    const q = dash.data("strategie_annonces"), h = H();
+    el.replaceChildren();
+    if (q.status !== "ok" || !Array.isArray(q.data)) { el.textContent = "—"; return; }
+    const budget = h ? h.plafond_mensuel : window.KV_BUDGET;
+    ["location", "achat"].forEach((opt) => {
+      const r = q.data.find((x) => x.option === opt);
+      const box = document.createElement("div"); box.className = "kv-opt";
+      const l = document.createElement("p"); l.className = "kv-opt-label"; l.textContent = opt === "location" ? "Meilleure location" : "Meilleur achat (SCI)";
+      box.append(l);
+      if (!r) { const p = document.createElement("p"); p.className = "kv-hyp"; p.textContent = "Aucune annonce chiffrée pour l'instant."; box.append(p); el.append(box); return; }
+      const t = document.createElement("p"); t.className = "kv-opt-title"; t.textContent = r.titre; box.append(t);
+      const m = document.createElement("p"); m.className = "kv-meta"; m.textContent = r.commune + (r.surface_m2 ? " · " + r.surface_m2 + " m²" : ""); box.append(m);
+      const c = document.createElement("p"); c.className = "kv-price-main";
+      const b = document.createElement("span"); b.textContent = KV.eur(r.cout_mensuel); b.setAttribute("data-source", "strategie_annonces"); b.setAttribute("data-field", "cout_mensuel"); b.setAttribute("data-where", "option=" + opt);
+      const sm = document.createElement("small"); sm.textContent = " par mois tout compris";
+      c.append(b, sm); box.append(c);
+      const st = document.createElement("span"); st.className = "kv-pill " + (r.cout_mensuel <= budget ? "ok" : "bad"); st.textContent = r.cout_mensuel <= budget ? "Dans le budget" : "Hors budget"; st.style.justifySelf = "start";
+      const a = document.createElement("a"); a.className = "kv-link"; a.href = r.lien; a.target = "_blank"; a.rel = "noopener noreferrer"; a.textContent = "Voir l'annonce ↗";
+      box.append(st, a);
+      el.append(box);
+    });
+  });
 })();
 </script>
