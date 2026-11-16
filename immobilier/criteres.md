@@ -62,4 +62,4 @@
 | Règle de financement | Mensualité de prêt (crédit + assurance) **≤ 3 500 €**, sur 20 ans, aux taux du moment |
 | Hypothèses (nov. 2026) | Taux 3,75 % hors assurance, assurance 0,30 %/an, frais de notaire 8 % (ancien) ou 3 % (neuf) financés, sans apport |
 | Prix maximum sans apport | ≈ 449 000 € (taxe foncière et charges de copropriété en plus) |
-| Structure | La SCM porte en général les moyens communs ; l'achat des murs se fait le plus souvent par une SCI des associés, qui loue ensuite à la SCM. À valider avec l'expert-comptable et la banque |
+| Structure | **Décidé : achat par une SCI des associés**, qui loue les murs à la SCM du cabinet. Le prêt est au nom de la SCI ; le loyer SCM → SCI couvre la mensualité. Points à caler avec l'expert-comptable : SCI à l'IR ou à l'IS, répartition des parts entre les 9 kinés, caution des associés, loyer SCM → SCI, sortie d'un associé |
