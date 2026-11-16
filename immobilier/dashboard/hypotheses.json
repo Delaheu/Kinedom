@@ -5,10 +5,11 @@
    "taux": 0.0375,
    "assurance": 0.003,
    "duree_ans": 20,
-   "apport": 0,
+   "apport": 40000,
    "plafond_mensuel": 3500,
-   "source": "Prêt souscrit par une SCI des associés, qui louera les murs à la SCM du cabinet. Taux moyen sur 20 ans relevé en novembre 2026 : 3,69 % à 3,80 % selon Meilleurtaux, CAFPI, Vousfinancer et le baromètre lesiteimmo. Retenu : 3,75 % hors assurance, assurance emprunteur 0,30 % par an. Pour une SCI, les banques ajoutent souvent 0,1 à 0,3 point : à confirmer par un courtier.",
-   "emprunteur": "SCI des associés"
+   "source": "Prêt souscrit par une SCI des associés, qui louera les murs à la SCM du cabinet. Taux moyen sur 20 ans relevé en novembre 2026 : 3,69 % à 3,80 % selon Meilleurtaux, CAFPI, Vousfinancer et le baromètre lesiteimmo. Retenu : 3,75 % hors assurance, assurance emprunteur 0,30 % par an. Pour une SCI, les banques ajoutent souvent 0,1 à 0,3 point : à confirmer par un courtier. Apport des associés : 40 000 €. Taxe foncière et charges estimées à environ 500 € par mois pour 180–200 m².",
+   "emprunteur": "SCI des associés",
+   "annexes_mensuelles": 500
   }
  ],
  "meta": [

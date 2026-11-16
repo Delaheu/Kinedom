@@ -60,6 +60,6 @@
 | Surface | 180 – 200 m² (170 – 210 acceptés) |
 | Prix visé | 400 000 – 450 000 € (au-dessus : « à surveiller » pour négociation) |
 | Règle de financement | Mensualité de prêt (crédit + assurance) **≤ 3 500 €**, sur 20 ans, aux taux du moment |
-| Hypothèses (nov. 2026) | Taux 3,75 % hors assurance, assurance 0,30 %/an, frais de notaire 8 % (ancien) ou 3 % (neuf) financés, sans apport |
-| Prix maximum sans apport | ≈ 449 000 € (taxe foncière et charges de copropriété en plus) |
+| Hypothèses (nov. 2026) | Taux 3,75 % hors assurance, assurance 0,30 %/an, frais de notaire 8 % (ancien) ou 3 % (neuf) financés, **apport des associés 40 000 €** |
+| Prix maximum (apport 40 000 €) | ≈ 561 000 € si seule la mensualité de prêt compte ; ≈ 486 000 € si les 3 500 € doivent aussi couvrir taxe foncière et charges (~500 €/mois) |
 | Structure | **Décidé : achat par une SCI des associés**, qui loue les murs à la SCM du cabinet. Le prêt est au nom de la SCI ; le loyer SCM → SCI couvre la mensualité. Points à caler avec l'expert-comptable : SCI à l'IR ou à l'IS, répartition des parts entre les 9 kinés, caution des associés, loyer SCM → SCI, sortie d'un associé |

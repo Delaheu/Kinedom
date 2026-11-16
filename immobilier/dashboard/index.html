@@ -138,11 +138,11 @@
           <input id="kv-prix" type="number" inputmode="numeric" min="0" step="5000" value="450000">
         </label>
         <label class="kv-simu-in" for="kv-apport">Apport des associés (€)
-          <input id="kv-apport" type="number" inputmode="numeric" min="0" step="5000" value="0">
+          <input id="kv-apport" type="number" inputmode="numeric" min="0" step="5000" value="40000">
         </label>
         <div class="kv-simu-out" data-draw="simu" data-source="hypotheses">—</div>
       </div>
-      <p class="kv-hyp">Taux retenu : <b data-draw="h-taux" data-source="hypotheses" data-field="taux" data-row="0">—</b> sur <b data-draw="h-duree" data-source="hypotheses" data-field="duree_ans" data-row="0">—</b> ans, assurance <b data-draw="h-assu" data-source="hypotheses" data-field="assurance" data-row="0">—</b> par an, frais de notaire de 8 % (ancien) financés. <span data-draw="h-src" data-source="hypotheses" data-field="source" data-row="0">—</span></p>
+      <p class="kv-hyp">Taux retenu : <b data-draw="h-taux" data-source="hypotheses" data-field="taux" data-row="0">—</b> sur <b data-draw="h-duree" data-source="hypotheses" data-field="duree_ans" data-row="0">—</b> ans, assurance <b data-draw="h-assu" data-source="hypotheses" data-field="assurance" data-row="0">—</b> par an, frais de notaire de 8 % (ancien) financés, apport des associés <b data-draw="h-apport" data-source="hypotheses" data-field="apport" data-row="0">—</b>. <span data-draw="h-src" data-source="hypotheses" data-field="source" data-row="0">—</span></p>
       <p class="kv-hyp" data-draw="h-max" data-source="prix_max">—</p>
     </div>
 
@@ -170,7 +170,7 @@
       <li>Le cabinet ne récupère pas la TVA : un loyer affiché HT est multiplié par 1,2.</li>
       <li>On ajoute les charges et la taxe foncière refacturée quand l'annonce ne les inclut pas. Si elles ne sont pas connues, on donne une fourchette (environ 2 à 3 € HT par m² et par mois).</li>
       <li>Une annonce est « dans le budget » quand le haut de sa fourchette ne dépasse pas le budget.</li>
-      <li>Achat : mensualité = crédit amortissable sur 20 ans au taux retenu, plus l'assurance emprunteur. Le montant emprunté inclut le prix, les honoraires en sus et les frais de notaire (8 % dans l'ancien, 3 % dans le neuf), moins l'apport. Le coût mensuel total ajoute la taxe foncière et les charges de copropriété.</li>
+      <li>Achat : mensualité = crédit amortissable sur 20 ans au taux retenu, plus l'assurance emprunteur. Le montant emprunté inclut le prix, les honoraires en sus et les frais de notaire (8 % dans l'ancien, 3 % dans le neuf), moins l'apport des associés (40 000 €). Le coût mensuel total ajoute la taxe foncière et les charges de copropriété.</li>
       <li>Les données viennent des résultats de recherche web. Chaque montant reste à confirmer auprès de l'agence avant une visite.</li>
     </ul>
   </details>
@@ -404,15 +404,19 @@ dash.draw("n-best", (el) => kvSyn("moins_cher", el, KV.eur));
   });
 
   dash.calc("prix_max", {
-    title: "Prix maximum pour 3 500 € par mois",
-    description: "Prix d'achat le plus élevé (ancien, frais de notaire 8 % financés, sans apport) dont la mensualité crédit + assurance reste sous le plafond.",
+    title: "Prix maximum pour le plafond mensuel",
+    description: "Prix d'achat le plus élevé (ancien, frais de notaire 8 % financés, apport déduit) : d'abord avec la seule mensualité de prêt sous le plafond, puis en comptant aussi la taxe foncière et les charges.",
     inputs: ["hypotheses"],
     fn: (hypotheses) => {
       const h = hypotheses[0];
-      if (!h) return null;
+      if (!h) return [];
       const r = h.taux / 12, n = h.duree_ans * 12;
       const parEuro = r / (1 - Math.pow(1 + r, -n)) + h.assurance / 12;
-      return Math.floor((h.plafond_mensuel / parEuro + (h.apport || 0)) / 1.08 / 1000) * 1000;
+      const max = (mensuel) => Math.floor((mensuel / parEuro + (h.apport || 0)) / 1.08 / 1000) * 1000;
+      return [
+        { cas: "pret", prix_max: max(h.plafond_mensuel) },
+        { cas: "total", prix_max: max(h.plafond_mensuel - (h.annexes_mensuelles || 0)) }
+      ];
     }
   });
 
@@ -423,13 +427,15 @@ dash.draw("n-best", (el) => kvSyn("moins_cher", el, KV.eur));
   dash.draw("h-duree", (el) => { const h = hyp(); el.textContent = h ? String(h.duree_ans) : "—"; });
   dash.draw("h-assu", (el) => { const h = hyp(); el.textContent = h ? pct(h.assurance) : "—"; });
   dash.draw("h-src", (el) => { const h = hyp(); el.textContent = h ? h.source : "—"; });
+  dash.draw("h-apport", (el) => { const h = hyp(); el.textContent = h ? KV.eur(h.apport || 0) : "—"; });
   dash.draw("h-max", (el) => {
-    const m = dash.data("prix_max");
+    const m = dash.data("prix_max"), h = hyp();
     el.replaceChildren();
-    if (m.status !== "ok" || m.data == null) { el.textContent = "—"; return; }
-    const b = document.createElement("b"); b.textContent = KV.eur(m.data); b.setAttribute("data-source", "prix_max");
-    el.append(document.createTextNode("Sans apport, le prix maximum compatible avec le plafond est d'environ "), b,
-      document.createTextNode(" (frais de notaire de l'ancien inclus). Chaque tranche de 10 000 € d'apport repousse ce plafond d'environ 9 300 €."));
+    if (m.status !== "ok" || !Array.isArray(m.data) || m.data.length < 2 || !h) { el.textContent = "—"; return; }
+    const b = (cas) => { const row = m.data.find((x) => x.cas === cas); const e = document.createElement("b"); e.textContent = KV.eur(row ? row.prix_max : null); e.setAttribute("data-source", "prix_max"); e.setAttribute("data-field", "prix_max"); e.setAttribute("data-where", "cas=" + cas); return e; };
+    el.append(document.createTextNode("Prix maximum : "), b("pret"),
+      document.createTextNode(" si seule la mensualité du prêt doit rester sous le plafond, ou "), b("total"),
+      document.createTextNode(" si le plafond doit aussi couvrir la taxe foncière et les charges (environ " + KV.eur(h.annexes_mensuelles || 0) + " par mois). La seconde limite est la plus prudente."));
   });
 
   const vals = () => {
