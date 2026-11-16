@@ -1,0 +1,7 @@
+{
+  "rows": [
+    {"date": "2026-11-16", "taux": 0.0375, "assurance": 0.003, "duree_ans": 20, "apport": 0, "plafond_mensuel": 3500,
+     "source": "Taux moyen sur 20 ans relevé en novembre 2026 : 3,69 % à 3,80 % selon Meilleurtaux, CAFPI, Vousfinancer et le baromètre lesiteimmo. Retenu : 3,75 % hors assurance, assurance emprunteur 0,30 % par an. Les banques appliquent souvent quelques dixièmes de plus à une société civile : à confirmer par un courtier."}
+  ],
+  "meta": [{"label": "Mise à jour", "value": "Taux revu chaque lundi par la recherche automatique."}]
+}

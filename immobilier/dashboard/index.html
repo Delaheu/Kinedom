@@ -60,12 +60,22 @@
 .kv-empty, .kv-fail { color: var(--color-fg-muted); padding: var(--cds-pad-lg); }
 .kv-notes summary { cursor: pointer; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
 .kv-notes ul { line-height: 1.6; max-width: 75ch; }
+.kv-nav { display: flex; gap: var(--cds-gap-md); font-size: var(--cds-font-size-caption); }
+.kv-sec-head { display: grid; gap: var(--cds-gap-xs); }
+.kv-sec-lead { margin: 0; color: var(--color-fg-muted); max-width: 75ch; line-height: 1.5; }
+.kv-simu { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--cds-gap-lg); align-items: start; }
+.kv-simu-in { display: grid; gap: var(--cds-gap-xs); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.kv-simu-in input { font: inherit; font-size: var(--cds-font-size-body); padding: 8px 10px; border-radius: var(--cds-radius); border: 1px solid var(--color-border-line); background: var(--color-bg); color: var(--color-fg); width: 100%; max-width: 260px; font-variant-numeric: tabular-nums; }
+.kv-simu-out { display: grid; gap: 4px; }
+.kv-hyp { margin: 0; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.5; }
+.kv-hyp b { color: var(--color-fg); font-weight: var(--cds-font-weight-medium); font-variant-numeric: tabular-nums; }
 </style>
 
 <div class="kv">
   <header class="kv-head" id="entete">
     <p class="kv-eyebrow">Kiné Ostéo Pôle Sport · Blagnac, Seilh, Beauzelle</p>
     <h1 class="kv-title">Veille locaux : 200 m² pour 9 kinés du sport</h1>
+    <nav class="kv-nav" aria-label="Sections"><a class="kv-link" href="#annonces">Locations</a><a class="kv-link" href="#achat">Achats</a><a class="kv-link" href="#methode">Méthode</a></nav>
     <p class="kv-take"><b data-draw="t-budget" data-source="synthese" data-field="dans_budget" data-row="0">—</b> annonces sur <b data-draw="t-total" data-source="synthese" data-field="total" data-row="0">—</b> rentrent dans le budget de <b data-draw="budget">—</b> TTC par mois, tout compris. Les prix affichés ci-dessous sont convertis en coût réel TTC (TVA non récupérable, charges et taxe foncière incluses).</p>
   </header>
 
@@ -115,12 +125,52 @@
     <div class="kv-cards" data-draw="cards" data-source="annonces"></div>
   </section>
 
+  <section id="achat" style="display:grid;gap:var(--cds-gap-lg)">
+    <div class="kv-sec-head">
+      <h2 class="kv-h2">Locaux à acheter</h2>
+      <p class="kv-sec-lead">Ventes de 180 à 200 m², prix visé entre 400 000 et 450 000 €. Règle : la mensualité du prêt (crédit et assurance, sur 20 ans) ne doit pas dépasser <b data-draw="plafond">—</b> par mois.</p>
+    </div>
+
+    <div class="kv-week" id="simulateur">
+      <h3 class="kv-h2">Simulateur de mensualité</h3>
+      <div class="kv-simu">
+        <label class="kv-simu-in" for="kv-prix">Prix du local (€)
+          <input id="kv-prix" type="number" inputmode="numeric" min="0" step="5000" value="450000">
+        </label>
+        <label class="kv-simu-in" for="kv-apport">Apport des associés (€)
+          <input id="kv-apport" type="number" inputmode="numeric" min="0" step="5000" value="0">
+        </label>
+        <div class="kv-simu-out" data-draw="simu" data-source="hypotheses">—</div>
+      </div>
+      <p class="kv-hyp">Taux retenu : <b data-draw="h-taux" data-source="hypotheses" data-field="taux" data-row="0">—</b> sur <b data-draw="h-duree" data-source="hypotheses" data-field="duree_ans" data-row="0">—</b> ans, assurance <b data-draw="h-assu" data-source="hypotheses" data-field="assurance" data-row="0">—</b> par an, frais de notaire de 8 % (ancien) financés. <span data-draw="h-src" data-source="hypotheses" data-field="source" data-row="0">—</span></p>
+      <p class="kv-hyp" data-draw="h-max" data-source="prix_max">—</p>
+    </div>
+
+    <div class="kv-bar">
+      <div class="kv-filters" role="group" aria-label="Filtrer les ventes par statut">
+        <button type="button" class="kv-chipbtn" data-vstatut="actives" aria-pressed="true">Pistes et à surveiller</button>
+        <button type="button" class="kv-chipbtn" data-vstatut="Écartée" aria-pressed="false">Écartées</button>
+        <button type="button" class="kv-chipbtn" data-vstatut="toutes" aria-pressed="false">Toutes</button>
+      </div>
+      <div class="kv-selects">
+        <label for="kv-vtri">Ordre
+          <select id="kv-vtri" class="dash-select">
+            <option value="asc">Plus anciennes d'abord</option>
+            <option value="desc">Plus récentes d'abord</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="kv-cards" data-draw="vcards" data-source="ventes ventes_calc"></div>
+  </section>
+
   <details class="kv-notes" id="methode">
     <summary>Comment le prix TTC est estimé</summary>
     <ul>
       <li>Le cabinet ne récupère pas la TVA : un loyer affiché HT est multiplié par 1,2.</li>
       <li>On ajoute les charges et la taxe foncière refacturée quand l'annonce ne les inclut pas. Si elles ne sont pas connues, on donne une fourchette (environ 2 à 3 € HT par m² et par mois).</li>
       <li>Une annonce est « dans le budget » quand le haut de sa fourchette ne dépasse pas le budget.</li>
+      <li>Achat : mensualité = crédit amortissable sur 20 ans au taux retenu, plus l'assurance emprunteur. Le montant emprunté inclut le prix, les honoraires en sus et les frais de notaire (8 % dans l'ancien, 3 % dans le neuf), moins l'apport. Le coût mensuel total ajoute la taxe foncière et les charges de copropriété.</li>
       <li>Les données viennent des résultats de recherche web. Chaque montant reste à confirmer auprès de l'agence avant une visite.</li>
     </ul>
   </details>
@@ -324,6 +374,190 @@ dash.draw("n-best", (el) => kvSyn("moins_cher", el, KV.eur));
     });
     if (!rows.length) { el.append(mk("p", "kv-empty", "Aucune annonce ne correspond à ces filtres.")); return; }
     rows.forEach((r) => el.append(card(r, lastDate)));
+  });
+})();
+</script>
+
+<script>
+(function () {
+  const pay = (L, taux, ans) => { if (!(L > 0)) return 0; const r = taux / 12, n = ans * 12; return r ? L * r / (1 - Math.pow(1 + r, -n)) : L / n; };
+  window.KV.pay = pay;
+
+  dash.calc("ventes_calc", {
+    title: "Mensualités des locaux à vendre",
+    description: "Montant emprunté, mensualité de prêt (crédit + assurance) et coût mensuel total (avec taxe foncière et charges) pour chaque annonce de vente.",
+    inputs: ["ventes", "hypotheses"],
+    fn: (ventes, hypotheses) => {
+      const h = hypotheses[0];
+      if (!h) return [];
+      return ventes.map((v) => {
+        if (v.prix == null) return { id: v.id, emprunt: null, mensualite_pret: null, cout_mensuel_total: null };
+        const emprunt = Math.max(0, v.prix + (v.honoraires_en_sus || 0) + v.prix * v.frais_notaire_pct - (h.apport || 0));
+        const r = h.taux / 12, n = h.duree_ans * 12;
+        const credit = emprunt * r / (1 - Math.pow(1 + r, -n));
+        const assurance = emprunt * h.assurance / 12;
+        const mensualite_pret = Math.round(credit + assurance);
+        const annexes = ((v.taxe_fonciere_an || 0) + (v.charges_an || 0)) / 12;
+        return { id: v.id, emprunt: Math.round(emprunt), mensualite_pret, cout_mensuel_total: Math.round(mensualite_pret + annexes) };
+      });
+    }
+  });
+
+  dash.calc("prix_max", {
+    title: "Prix maximum pour 3 500 € par mois",
+    description: "Prix d'achat le plus élevé (ancien, frais de notaire 8 % financés, sans apport) dont la mensualité crédit + assurance reste sous le plafond.",
+    inputs: ["hypotheses"],
+    fn: (hypotheses) => {
+      const h = hypotheses[0];
+      if (!h) return null;
+      const r = h.taux / 12, n = h.duree_ans * 12;
+      const parEuro = r / (1 - Math.pow(1 + r, -n)) + h.assurance / 12;
+      return Math.floor((h.plafond_mensuel / parEuro + (h.apport || 0)) / 1.08 / 1000) * 1000;
+    }
+  });
+
+  const hyp = () => { const q = dash.data("hypotheses"); return q.status === "ok" && q.data[0] ? q.data[0] : null; };
+  const pct = (v) => d3.format(".2f")(v * 100).replace(".", ",") + " %";
+  dash.draw("plafond", (el) => { const h = hyp(); el.textContent = h ? KV.eur(h.plafond_mensuel) : KV.eur(window.KV_BUDGET); });
+  dash.draw("h-taux", (el) => { const h = hyp(); el.textContent = h ? pct(h.taux) : "—"; });
+  dash.draw("h-duree", (el) => { const h = hyp(); el.textContent = h ? String(h.duree_ans) : "—"; });
+  dash.draw("h-assu", (el) => { const h = hyp(); el.textContent = h ? pct(h.assurance) : "—"; });
+  dash.draw("h-src", (el) => { const h = hyp(); el.textContent = h ? h.source : "—"; });
+  dash.draw("h-max", (el) => {
+    const m = dash.data("prix_max");
+    el.replaceChildren();
+    if (m.status !== "ok" || m.data == null) { el.textContent = "—"; return; }
+    const b = document.createElement("b"); b.textContent = KV.eur(m.data); b.setAttribute("data-source", "prix_max");
+    el.append(document.createTextNode("Sans apport, le prix maximum compatible avec le plafond est d'environ "), b,
+      document.createTextNode(" (frais de notaire de l'ancien inclus). Chaque tranche de 10 000 € d'apport repousse ce plafond d'environ 9 300 €."));
+  });
+
+  const vals = () => {
+    const g = (sel) => { let v = 0; document.querySelectorAll(sel).forEach((i) => { v = Number(i.value) || 0; }); return v; };
+    return { prix: g("#kv-prix"), apport: g("#kv-apport") };
+  };
+  document.querySelectorAll("#kv-prix, #kv-apport").forEach((i) => i.addEventListener("input", () => dash.draw("simu")));
+
+  dash.draw("simu", (el) => {
+    const h = hyp();
+    el.replaceChildren();
+    if (!h) { el.textContent = "—"; return; }
+    const { prix, apport } = vals();
+    const emprunt = Math.max(0, prix * 1.08 - apport);
+    const m = Math.round(pay(emprunt, h.taux, h.duree_ans) + emprunt * h.assurance / 12);
+    const big = document.createElement("p"); big.className = "kv-price-main";
+    big.append(document.createTextNode(KV.eur(m) + " "));
+    const sm = document.createElement("small"); sm.textContent = "par mois, crédit + assurance"; big.append(sm);
+    const scaleMax = h.plafond_mensuel * 1.5;
+    const g = document.createElement("div"); g.className = "kv-gauge"; g.setAttribute("role", "img");
+    g.setAttribute("aria-label", "Mensualité " + KV.eur(m) + " pour un plafond de " + KV.eur(h.plafond_mensuel));
+    const f = document.createElement("div"); f.className = "kv-gauge-fill"; f.style.left = "0";
+    f.style.width = Math.min(100, m / scaleMax * 100) + "%";
+    f.style.background = m <= h.plafond_mensuel * 0.95 ? "var(--color-ok)" : (m <= h.plafond_mensuel ? "var(--color-warn)" : "var(--color-bad)");
+    const mk = document.createElement("div"); mk.className = "kv-gauge-mark"; mk.style.left = (h.plafond_mensuel / scaleMax * 100) + "%";
+    g.append(f, mk);
+    const leg = document.createElement("div"); leg.className = "kv-gauge-legend";
+    const a = document.createElement("span"); a.textContent = "Emprunt " + KV.eur(emprunt);
+    const b = document.createElement("span"); b.textContent = "Plafond " + KV.eur(h.plafond_mensuel);
+    leg.append(a, b);
+    el.append(big, g, leg);
+  });
+
+  const st = { statut: "actives", tri: "asc" };
+  const btns = () => document.querySelectorAll(".kv-chipbtn[data-vstatut]");
+  btns().forEach((b) => b.addEventListener("click", () => {
+    st.statut = b.getAttribute("data-vstatut");
+    btns().forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    dash.draw("vcards");
+  }));
+  document.querySelectorAll("#kv-vtri").forEach((s) => s.addEventListener("change", () => { st.tri = s.value; dash.draw("vcards"); }));
+
+  const mk = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const mark = (e, src, id, field) => { e.setAttribute("data-source", src); e.setAttribute("data-field", field); e.setAttribute("data-where", "id=" + encodeURIComponent(id)); return e; };
+  const statusCls = { "Piste": "ok", "À surveiller": "warn", "Écartée": "bad" };
+
+  function vcard(v, calc, plafond, lastDate) {
+    const c = mk("article", "kv-card" + (v.statut === "Écartée" ? " is-out" : ""));
+    c.id = "vente-" + v.id;
+    const ph = mk("div", "kv-photo");
+    if (typeof v.photo === "string" && (v.photo.startsWith("data:image/") || v.photo.startsWith("/_blob/"))) {
+      const img = document.createElement("img"); img.src = v.photo; img.alt = "Photo : " + v.titre; img.loading = "lazy"; ph.append(img);
+    } else {
+      const box = mk("div", "kv-ph");
+      const sw = mk("div");
+      if (v.surface_m2 != null) { sw.append(mark(mk("span", "kv-ph-surface", String(v.surface_m2)), "ventes", v.id, "surface_m2"), document.createTextNode(" m²")); }
+      else sw.append(mk("span", "kv-ph-surface", "? m²"));
+      box.append(sw, mk("span", "kv-ph-town", v.commune), mk("span", "kv-ph-note", "Photo à récupérer sur l'annonce"));
+      ph.append(box);
+    }
+    const tags = mk("div", "kv-photo-tags");
+    tags.append(mk("span", "kv-pill", "À vendre"), mark(mk("span", "kv-pill " + (statusCls[v.statut] || ""), v.statut), "ventes", v.id, "statut"));
+    if (v.date_trouvee === lastDate) tags.append(mk("span", "kv-pill new", "Nouveau"));
+    ph.append(tags);
+    c.append(ph);
+
+    const body = mk("div", "kv-body");
+    body.append(mark(mk("h3", "kv-card-title", v.titre), "ventes", v.id, "titre"));
+    const d = KV.parse(KV.dateOf(v));
+    body.append(mk("p", "kv-meta", v.commune + " · " + v.type_bien + " · " + (v.surface_m2 != null ? v.surface_m2 + " m²" : "surface ?") + " · " + (v.date_publication ? "publiée le " : "trouvée le ") + (d ? KV.fmtDate(d) : "?")));
+
+    const price = mk("div", "kv-price");
+    const main = mk("p", "kv-price-main");
+    if (!calc || calc.mensualite_pret == null) {
+      main.append(document.createTextNode("Prix à demander"));
+    } else {
+      main.append(mark(mk("span", null, KV.eur(calc.mensualite_pret)), "ventes_calc", v.id, "mensualite_pret"), document.createTextNode(" "), mk("small", null, "/ mois de prêt (crédit + assurance)"));
+      price.append(main);
+      const scaleMax = Math.max(plafond * 1.5, calc.mensualite_pret);
+      const g = mk("div", "kv-gauge"); g.setAttribute("role", "img");
+      g.setAttribute("aria-label", "Mensualité " + KV.eur(calc.mensualite_pret) + " pour un plafond de " + KV.eur(plafond));
+      const f = mk("div", "kv-gauge-fill"); f.style.left = "0"; f.style.width = (calc.mensualite_pret / scaleMax * 100) + "%";
+      f.style.background = calc.mensualite_pret <= plafond * 0.95 ? "var(--color-ok)" : (calc.mensualite_pret <= plafond ? "var(--color-warn)" : "var(--color-bad)");
+      const m = mk("div", "kv-gauge-mark"); m.style.left = (plafond / scaleMax * 100) + "%";
+      g.append(f, m);
+      const leg = mk("div", "kv-gauge-legend");
+      leg.append(mk("span", null, calc.mensualite_pret <= plafond ? "Sous le plafond" : "Au-dessus du plafond"), mk("span", null, "Plafond " + KV.eur(plafond)));
+      price.append(g, leg);
+      const tot = mk("p", "kv-shown");
+      tot.append(document.createTextNode("Coût mensuel total avec taxe foncière et charges" + (v.charges_estimees ? " (estimées)" : "") + " : ≈ "),
+        mark(mk("b", null, KV.eur(calc.cout_mensuel_total)), "ventes_calc", v.id, "cout_mensuel_total"),
+        document.createTextNode(" · emprunt "), mark(mk("span", null, KV.eur(calc.emprunt)), "ventes_calc", v.id, "emprunt"));
+      price.append(tot);
+    }
+    if (!price.contains(main)) price.prepend(main);
+    const shown = mk("p", "kv-shown");
+    shown.append(document.createTextNode("Prix affiché : "), mark(mk("span", null, v.prix_texte), "ventes", v.id, "prix_texte"));
+    price.append(shown);
+    body.append(price);
+    body.append(mark(mk("p", "kv-desc", v.resume), "ventes", v.id, "resume"));
+    if (v.a_verifier) {
+      const chk = mk("p", "kv-check");
+      chk.append(mk("b", null, "À vérifier : "), mark(mk("span", null, v.a_verifier), "ventes", v.id, "a_verifier"));
+      body.append(chk);
+    }
+    c.append(body);
+    const foot = mk("div", "kv-foot");
+    const left = mk("span");
+    left.append(document.createTextNode("Score "), mark(mk("b", null, String(v.score)), "ventes", v.id, "score"), document.createTextNode("/100 · " + v.site + (v.verifie ? " · vérifiée" : " · non vérifiée")));
+    const a = mk("a", "kv-link", "Voir l'annonce ↗"); a.href = v.lien; a.target = "_blank"; a.rel = "noopener noreferrer";
+    foot.append(left, a);
+    c.append(foot);
+    return c;
+  }
+
+  dash.draw("vcards", (el) => {
+    const q = dash.data("ventes"), cq = dash.data("ventes_calc"), h = hyp();
+    el.replaceChildren();
+    if (q.status === "loading") { el.classList.add("dash-skeleton"); return; }
+    el.classList.remove("dash-skeleton");
+    if (q.status !== "ok") { el.append(mk("p", q.status === "error" ? "kv-fail" : "kv-empty", q.status === "error" ? "Les annonces de vente n'ont pas pu être chargées." : "—")); return; }
+    const byId = new Map(((cq.status === "ok" && Array.isArray(cq.data)) ? cq.data : []).map((r) => [r.id, r]));
+    const plafond = h ? h.plafond_mensuel : window.KV_BUDGET;
+    const lastDate = q.data.reduce((m, r) => (r.date_trouvee > m ? r.date_trouvee : m), "");
+    const rows = q.data.filter((r) => st.statut === "toutes" || (st.statut === "actives" ? r.statut !== "Écartée" : r.statut === st.statut));
+    rows.sort((a, b) => (st.tri === "asc" ? d3.ascending(KV.dateOf(a), KV.dateOf(b)) : d3.descending(KV.dateOf(a), KV.dateOf(b))) || d3.descending(a.score, b.score));
+    if (!rows.length) { el.append(mk("p", "kv-empty", "Aucune annonce de vente ne correspond à ce filtre.")); return; }
+    rows.forEach((r) => el.append(vcard(r, byId.get(r.id), plafond, lastDate)));
   });
 })();
 </script>

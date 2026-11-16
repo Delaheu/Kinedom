@@ -52,3 +52,14 @@
   https://claude.ai/artifact/LG9cuX3S9StbP1QwPx9u6c
 - Données du tableau de bord : `immobilier/dashboard/annonces.json` (une ligne par annonce) et `semaines.json` (un résumé par semaine)
 - Les annonces sont classées de la plus ancienne à la plus récente (date de publication, sinon date de découverte), avec photo quand elle est récupérable, un résumé et le **coût TTC tout compris**
+
+## Achat (veille en parallèle)
+
+| Critère | Valeur |
+|---|---|
+| Surface | 180 – 200 m² (170 – 210 acceptés) |
+| Prix visé | 400 000 – 450 000 € (au-dessus : « à surveiller » pour négociation) |
+| Règle de financement | Mensualité de prêt (crédit + assurance) **≤ 3 500 €**, sur 20 ans, aux taux du moment |
+| Hypothèses (nov. 2026) | Taux 3,75 % hors assurance, assurance 0,30 %/an, frais de notaire 8 % (ancien) ou 3 % (neuf) financés, sans apport |
+| Prix maximum sans apport | ≈ 449 000 € (taxe foncière et charges de copropriété en plus) |
+| Structure | La SCM porte en général les moyens communs ; l'achat des murs se fait le plus souvent par une SCI des associés, qui loue ensuite à la SCM. À valider avec l'expert-comptable et la banque |
