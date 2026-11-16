@@ -82,7 +82,7 @@ Je peux vous aider à faire cette intégration si besoin.
 
 ---
 
-## 🏢 Agent immobilier — recherche du futur local
+## 🏢 Agent immobilier Kops — recherche du futur local
 
 Un agent Claude Code cherche et suit les locaux à louer pour le cabinet : environ 200 m², 3 500 €/mois maximum tout inclus, à Blagnac, Seilh ou Beauzelle.
 

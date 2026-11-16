@@ -1,4 +1,4 @@
-# Cahier des charges — Local KINÉ OSTÉO PÔLE SPORT
+# Cahier des charges — Local Kops (Kiné Ostéo Pôle Sport)
 
 > Ce fichier est la « mémoire » de l'agent immobilier. Modifiez-le librement :
 > l'agent le relit avant chaque recherche.

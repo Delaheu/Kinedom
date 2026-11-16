@@ -1,4 +1,4 @@
-# Suivi des annonces — Local kiné du sport
+# Suivi des annonces — Local Kops
 
 Mis à jour par l'agent immobilier. Statuts : 🆕 nouvelle · 📞 à appeler · 👀 visite prévue · ❌ écartée · ⭐ favorite
 
