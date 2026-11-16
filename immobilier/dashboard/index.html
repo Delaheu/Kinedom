@@ -60,7 +60,11 @@
 .kv-empty, .kv-fail { color: var(--color-fg-muted); padding: var(--cds-pad-lg); }
 .kv-notes summary { cursor: pointer; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
 .kv-notes ul { line-height: 1.6; max-width: 75ch; }
-.kv-nav { display: flex; gap: var(--cds-gap-md); font-size: var(--cds-font-size-caption); }
+.kv-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--color-border-line); margin-top: var(--cds-gap-sm); }
+.kv-tab { font: inherit; font-size: var(--cds-font-size-body); padding: 10px 16px; background: none; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; color: var(--color-fg-muted); cursor: pointer; }
+.kv-tab[aria-selected="true"] { color: var(--color-fg); border-bottom-color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
+.kv-tab:focus-visible { outline: 2px solid var(--color-fg); outline-offset: -2px; }
+.kv-page { display: grid; gap: var(--cds-gap-xl); }
 .kv-sec-head { display: grid; gap: var(--cds-gap-xs); }
 .kv-sec-lead { margin: 0; color: var(--color-fg-muted); max-width: 75ch; line-height: 1.5; }
 .kv-simu { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--cds-gap-lg); align-items: start; }
@@ -75,16 +79,11 @@
   <header class="kv-head" id="entete">
     <p class="kv-eyebrow">Kiné Ostéo Pôle Sport · Blagnac, Seilh, Beauzelle</p>
     <h1 class="kv-title">Veille locaux : 200 m² pour 9 kinés du sport</h1>
-    <nav class="kv-nav" aria-label="Sections"><a class="kv-link" href="#annonces">Locations</a><a class="kv-link" href="#achat">Achats</a><a class="kv-link" href="#methode">Méthode</a></nav>
-    <p class="kv-take"><b data-draw="t-budget" data-source="synthese" data-field="dans_budget" data-row="0">—</b> annonces sur <b data-draw="t-total" data-source="synthese" data-field="total" data-row="0">—</b> rentrent dans le budget de <b data-draw="budget">—</b> TTC par mois, tout compris. Les prix affichés ci-dessous sont convertis en coût réel TTC (TVA non récupérable, charges et taxe foncière incluses).</p>
+    <div class="kv-tabs" role="tablist" aria-label="Pages">
+      <button type="button" class="kv-tab" role="tab" id="tab-locations" data-tab="locations" aria-controls="locations" aria-selected="true">Locations</button>
+      <button type="button" class="kv-tab" role="tab" id="tab-achats" data-tab="achats" aria-controls="achats" aria-selected="false">Achats</button>
+    </div>
   </header>
-
-  <section class="kv-tiles" id="chiffres" aria-label="Chiffres clés">
-    <div class="kv-tile" id="tuile-total"><p class="kv-tile-label">Annonces suivies</p><p class="kv-tile-value" data-draw="n-total" data-source="synthese" data-field="total" data-row="0">—</p><p class="kv-tile-note">depuis le début de la veille</p></div>
-    <div class="kv-tile" id="tuile-budget"><p class="kv-tile-label">Dans le budget TTC</p><p class="kv-tile-value" data-draw="n-budget" data-source="synthese" data-field="dans_budget" data-row="0">—</p><p class="kv-tile-note">fourchette haute ≤ budget</p></div>
-    <div class="kv-tile" id="tuile-nouvelles"><p class="kv-tile-label">Nouvelles cette semaine</p><p class="kv-tile-value" data-draw="n-new" data-source="synthese" data-field="nouvelles" data-row="0">—</p><p class="kv-tile-note">dernière recherche</p></div>
-    <div class="kv-tile" id="tuile-moins-cher"><p class="kv-tile-label">Coût TTC le plus bas (piste)</p><p class="kv-tile-value" data-draw="n-best" data-source="synthese" data-field="moins_cher" data-row="0">—</p><p class="kv-tile-note">estimation par mois, tout compris</p></div>
-  </section>
 
   <section class="kv-week" id="resume-semaine">
     <h2 class="kv-h2">Résumé de la semaine</h2>
@@ -96,7 +95,19 @@
     </details>
   </section>
 
-  <section id="annonces" style="display:grid;gap:var(--cds-gap-lg)">
+  <section class="kv-page" id="locations" role="tabpanel" aria-labelledby="tab-locations">
+    <div class="kv-sec-head">
+      <h2 class="kv-h2">Locaux à louer</h2>
+  <p class="kv-take"><b data-draw="t-budget" data-source="synthese" data-field="dans_budget" data-row="0">—</b> annonces sur <b data-draw="t-total" data-source="synthese" data-field="total" data-row="0">—</b> rentrent dans le budget de <b data-draw="budget">—</b> TTC par mois, tout compris. Les prix affichés ci-dessous sont convertis en coût réel TTC (TVA non récupérable, charges et taxe foncière incluses).</p>
+    </div>
+  <section class="kv-tiles" id="chiffres" aria-label="Chiffres clés">
+    <div class="kv-tile" id="tuile-total"><p class="kv-tile-label">Annonces suivies</p><p class="kv-tile-value" data-draw="n-total" data-source="synthese" data-field="total" data-row="0">—</p><p class="kv-tile-note">depuis le début de la veille</p></div>
+    <div class="kv-tile" id="tuile-budget"><p class="kv-tile-label">Dans le budget TTC</p><p class="kv-tile-value" data-draw="n-budget" data-source="synthese" data-field="dans_budget" data-row="0">—</p><p class="kv-tile-note">fourchette haute ≤ budget</p></div>
+    <div class="kv-tile" id="tuile-nouvelles"><p class="kv-tile-label">Nouvelles cette semaine</p><p class="kv-tile-value" data-draw="n-new" data-source="synthese" data-field="nouvelles" data-row="0">—</p><p class="kv-tile-note">dernière recherche</p></div>
+    <div class="kv-tile" id="tuile-moins-cher"><p class="kv-tile-label">Coût TTC le plus bas (piste)</p><p class="kv-tile-value" data-draw="n-best" data-source="synthese" data-field="moins_cher" data-row="0">—</p><p class="kv-tile-note">estimation par mois, tout compris</p></div>
+  </section>
+
+  <div id="annonces" style="display:grid;gap:var(--cds-gap-lg)">
     <div class="kv-bar">
       <div class="kv-filters" role="group" aria-label="Filtrer par statut">
         <button type="button" class="kv-chipbtn" data-statut="actives" aria-pressed="true">Pistes et à surveiller</button>
@@ -123,12 +134,21 @@
       </div>
     </div>
     <div class="kv-cards" data-draw="cards" data-source="annonces"></div>
+  </div>
+
   </section>
 
-  <section id="achat" style="display:grid;gap:var(--cds-gap-lg)">
+  <section class="kv-page" id="achats" role="tabpanel" aria-labelledby="tab-achats" hidden>
     <div class="kv-sec-head">
-      <h2 class="kv-h2">Locaux à acheter</h2>
+      <h2 class="kv-h2">Locaux à acheter (SCI)</h2>
       <p class="kv-sec-lead">Achat des murs par une SCI des associés, qui les loue ensuite à la SCM du cabinet. Ventes de 180 à 200 m², prix visé entre 400 000 et 450 000 €. Règle : la mensualité du prêt de la SCI (crédit et assurance, sur 20 ans) ne doit pas dépasser <b data-draw="plafond">—</b> par mois. Le loyer versé par la SCM à la SCI couvre cette mensualité.</p>
+    </div>
+
+    <div class="kv-tiles" id="chiffres-achat" aria-label="Chiffres clés achat">
+      <div class="kv-tile" id="tuile-v-total"><p class="kv-tile-label">Annonces de vente suivies</p><p class="kv-tile-value" data-draw="v-total" data-source="synthese_ventes" data-field="total" data-row="0">—</p><p class="kv-tile-note">depuis le début de la veille</p></div>
+      <div class="kv-tile" id="tuile-v-plafond"><p class="kv-tile-label">Sous le plafond (prêt seul)</p><p class="kv-tile-value" data-draw="v-ok" data-source="synthese_ventes" data-field="sous_plafond" data-row="0">—</p><p class="kv-tile-note">mensualité crédit + assurance</p></div>
+      <div class="kv-tile" id="tuile-v-new"><p class="kv-tile-label">Nouvelles cette semaine</p><p class="kv-tile-value" data-draw="v-new" data-source="synthese_ventes" data-field="nouvelles" data-row="0">—</p><p class="kv-tile-note">dernière recherche</p></div>
+      <div class="kv-tile" id="tuile-v-best"><p class="kv-tile-label">Mensualité la plus basse</p><p class="kv-tile-value" data-draw="v-best" data-source="synthese_ventes" data-field="plus_basse" data-row="0">—</p><p class="kv-tile-note">parmi les annonces non écartées</p></div>
     </div>
 
     <div class="kv-week" id="simulateur">
@@ -565,5 +585,49 @@ dash.draw("n-best", (el) => kvSyn("moins_cher", el, KV.eur));
     if (!rows.length) { el.append(mk("p", "kv-empty", "Aucune annonce de vente ne correspond à ce filtre.")); return; }
     rows.forEach((r) => el.append(vcard(r, byId.get(r.id), plafond, lastDate)));
   });
+})();
+</script>
+
+<script>
+(function () {
+  const pages = ["locations", "achats"];
+  function open(name) {
+    if (!pages.includes(name)) name = "locations";
+    document.querySelectorAll(".kv-page").forEach((p) => { p.hidden = p.id !== name; });
+    document.querySelectorAll(".kv-tab").forEach((t) => t.setAttribute("aria-selected", String(t.getAttribute("data-tab") === name)));
+    dash.setLink(name);
+  }
+  document.querySelectorAll(".kv-tab").forEach((t) => t.addEventListener("click", () => open(t.getAttribute("data-tab"))));
+  const h = (location.hash || "").replace("#", "");
+  if (pages.includes(h)) open(h);
+  window.addEventListener("hashchange", () => { const x = (location.hash || "").replace("#", ""); if (pages.includes(x)) open(x); });
+
+  dash.calc("synthese_ventes", {
+    title: "Synthèse des ventes",
+    description: "Nombre d'annonces de vente suivies, sous le plafond de mensualité, nouvelles lors de la dernière recherche, et mensualité de prêt la plus basse parmi les annonces non écartées.",
+    inputs: ["ventes", "ventes_calc", "hypotheses"],
+    fn: (ventes, calc, hypotheses) => {
+      const h = hypotheses[0];
+      const plafond = h ? h.plafond_mensuel : 3500;
+      const byId = new Map((Array.isArray(calc) ? calc : []).map((r) => [r.id, r]));
+      const last = ventes.reduce((m, r) => (r.date_trouvee > m ? r.date_trouvee : m), "");
+      const actives = ventes.filter((v) => v.statut !== "Écartée").map((v) => byId.get(v.id)).filter((c) => c && c.mensualite_pret != null);
+      return [{
+        total: ventes.length,
+        sous_plafond: ventes.filter((v) => { const c = byId.get(v.id); return c && c.mensualite_pret != null && c.mensualite_pret <= plafond; }).length,
+        nouvelles: ventes.filter((v) => v.date_trouvee === last).length,
+        plus_basse: actives.length ? d3.min(actives, (c) => c.mensualite_pret) : null
+      }];
+    }
+  });
+  const syn = (field, el, fmt) => {
+    const s = dash.data("synthese_ventes");
+    if (s.status !== "ok" || !s.data || !s.data[0]) { el.textContent = "—"; return; }
+    const v = s.data[0][field]; el.textContent = v == null ? "—" : (fmt ? fmt(v) : String(v));
+  };
+  dash.draw("v-total", (el) => syn("total", el));
+  dash.draw("v-ok", (el) => syn("sous_plafond", el));
+  dash.draw("v-new", (el) => syn("nouvelles", el));
+  dash.draw("v-best", (el) => syn("plus_basse", el, KV.eur));
 })();
 </script>
