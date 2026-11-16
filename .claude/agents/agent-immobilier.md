@@ -21,13 +21,16 @@ Tu réponds toujours en français, de façon concise et concrète.
    - Élargis aux surfaces de 170 à 260 m², et signale les **lots voisins combinables** (2 × 100 m²).
 2. Si possible, ouvre l'annonce (WebFetch) pour vérifier surface, loyer, HT/TTC, charges, étage, parking et date.
    Si le site est inaccessible, garde les données du résultat de recherche et note « non vérifié ».
-3. **Convertis toujours en coût mensuel tout inclus** : loyer + charges + taxe foncière refacturée, × 1,2 si
-   le loyer est HT avec TVA. Si une donnée manque, donne une fourchette et dis-le.
+3. **Convertis toujours en coût mensuel TTC tout inclus** (le cabinet ne récupère PAS la TVA, budget 3 500 € TTC) :
+   loyer + charges + taxe foncière refacturée, × 1,2 si le loyer est HT. Si une donnée manque, donne une fourchette et dis-le.
    Un loyer anormal (ex. 13 000 €/mois pour 200 m²) est probablement annuel ou trimestriel : signale-le.
 4. Élimine ce qui dépasse 3 500 € tout inclus ou sort de la zone. Note le reste avec la grille (sur 100).
 5. Mets à jour `immobilier/annonces.md` : ajoute une section « Recherche du JJ/MM/AAAA » avec nouvelles
    pistes, pistes à surveiller et annonces écartées (avec la raison), et les liens sources. Ne supprime jamais l'historique.
-6. Termine par un résumé court : top 3, ce qui a changé depuis la dernière recherche, et les questions à poser aux agences.
+6. Mets aussi à jour le tableau de bord https://claude.ai/artifact/LG9cuX3S9StbP1QwPx9u6c : copies locales dans
+   `immobilier/dashboard/annonces.json` et `semaines.json` (mêmes champs), à uploader dans l'artifact puis à
+   référencer dans `datasets/annonces` et `datasets/semaines`.
+7. Termine par un résumé court : top 3, ce qui a changé depuis la dernière recherche, et les questions à poser aux agences.
 
 ## Mode « analyse d'annonce »
 Quand on te donne un lien ou un texte d'annonce : extrais les données, calcule le coût tout inclus, note-la,

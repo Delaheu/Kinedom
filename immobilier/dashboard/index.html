@@ -1,0 +1,329 @@
+<meta name="dash-one-writer">
+<style>
+.kv { display: grid; gap: var(--cds-gap-xl); font-family: var(--font-anthropic-sans); color: var(--color-fg); }
+.kv-head { display: grid; gap: var(--cds-gap-sm); }
+.kv-eyebrow { font-size: var(--cds-font-size-caption); letter-spacing: .06em; text-transform: uppercase; color: var(--color-fg-muted); margin: 0; }
+.kv-title { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
+.kv-take { font-size: var(--cds-font-size-body); color: var(--color-fg); margin: 0; max-width: 70ch; line-height: 1.5; }
+.kv-take b { font-variant-numeric: tabular-nums; }
+.kv-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--cds-gap-md); }
+.kv-tile { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-md) var(--cds-pad-lg); display: grid; gap: var(--cds-gap-xs); min-width: 0; }
+.kv-tile-label { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: 0; }
+.kv-tile-value { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; margin: 0; }
+.kv-tile-note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: 0; }
+.kv-week { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: grid; gap: var(--cds-gap-sm); }
+.kv-h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
+.kv-week-date { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: 0; }
+.kv-week-text { margin: 0; line-height: 1.6; max-width: 75ch; }
+.kv-hist summary { cursor: pointer; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.kv-hist-list { display: grid; gap: var(--cds-gap-md); margin: var(--cds-gap-sm) 0 0; padding: 0; list-style: none; }
+.kv-hist-list li { display: grid; gap: var(--cds-gap-xs); line-height: 1.5; }
+.kv-hist-list .d { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.kv-bar { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md); align-items: end; justify-content: space-between; }
+.kv-filters { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs); }
+.kv-chipbtn { font: inherit; font-size: var(--cds-font-size-caption); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--color-border-line); background: var(--color-bg); color: var(--color-fg); cursor: pointer; }
+.kv-chipbtn[aria-pressed="true"] { background: var(--color-fg); color: var(--color-bg); border-color: var(--color-fg); }
+.kv-chipbtn:focus-visible, .kv-link:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
+.kv-selects { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); }
+.kv-selects label { display: grid; gap: 2px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.kv-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: var(--cds-gap-lg); min-height: 200px; }
+.kv-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.kv-card.is-out { opacity: .72; }
+.kv-photo { aspect-ratio: 16 / 9; max-width: 100%; background: var(--color-bg); border-bottom: 1px solid var(--color-border-line); position: relative; display: grid; place-items: center; overflow: hidden; }
+.kv-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.kv-ph { display: grid; justify-items: center; gap: 2px; color: var(--color-fg-muted); text-align: center; padding: var(--cds-pad-md); }
+.kv-ph-surface { font-family: var(--font-anthropic-serif); font-size: 40px; line-height: 1; color: var(--color-fg); font-variant-numeric: tabular-nums; }
+.kv-ph-town { font-size: var(--cds-font-size-body); color: var(--color-fg); }
+.kv-ph-note { font-size: var(--cds-font-size-caption); }
+.kv-photo-tags { position: absolute; top: 10px; left: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+.kv-pill { font-size: 12px; padding: 3px 9px; border-radius: 999px; background: var(--color-panel); border: 1px solid var(--color-border-line); color: var(--color-fg); white-space: nowrap; }
+.kv-pill.ok { border-color: var(--color-ok); color: var(--color-ok); }
+.kv-pill.warn { border-color: var(--color-warn); color: var(--color-warn); }
+.kv-pill.bad { border-color: var(--color-bad); color: var(--color-bad); }
+.kv-pill.new { background: var(--color-fg); color: var(--color-bg); border-color: var(--color-fg); }
+.kv-body { padding: var(--cds-pad-lg); display: grid; gap: var(--cds-gap-md); flex: 1; align-content: start; }
+.kv-card-title { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; text-wrap: balance; }
+.kv-meta { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: 0; }
+.kv-price { display: grid; gap: 6px; }
+.kv-price-main { font-family: var(--font-anthropic-serif); font-size: 26px; font-weight: 400; font-variant-numeric: tabular-nums; margin: 0; }
+.kv-price-main small { font-family: var(--font-anthropic-sans); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.kv-gauge { position: relative; height: 8px; border-radius: 4px; background: var(--color-bg); border: 1px solid var(--color-border-line); }
+.kv-gauge-fill { position: absolute; top: 0; bottom: 0; border-radius: 4px; }
+.kv-gauge-mark { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--color-fg); }
+.kv-gauge-legend { display: flex; justify-content: space-between; font-size: 12px; color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
+.kv-shown { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: 0; }
+.kv-desc { margin: 0; line-height: 1.55; }
+.kv-check { margin: 0; font-size: var(--cds-font-size-caption); line-height: 1.5; }
+.kv-check b { font-weight: var(--cds-font-weight-medium); }
+.kv-foot { display: flex; justify-content: space-between; align-items: center; gap: var(--cds-gap-sm); flex-wrap: wrap; padding: var(--cds-pad-md) var(--cds-pad-lg); border-top: 1px solid var(--color-border-line); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.kv-link { color: var(--color-fg); font-weight: var(--cds-font-weight-medium); text-decoration: underline; text-underline-offset: 3px; }
+.kv-empty, .kv-fail { color: var(--color-fg-muted); padding: var(--cds-pad-lg); }
+.kv-notes summary { cursor: pointer; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.kv-notes ul { line-height: 1.6; max-width: 75ch; }
+</style>
+
+<div class="kv">
+  <header class="kv-head" id="entete">
+    <p class="kv-eyebrow">Kiné Ostéo Pôle Sport · Blagnac, Seilh, Beauzelle</p>
+    <h1 class="kv-title">Veille locaux : 200 m² pour 9 kinés du sport</h1>
+    <p class="kv-take"><b data-draw="t-budget" data-source="synthese" data-field="dans_budget" data-row="0">—</b> annonces sur <b data-draw="t-total" data-source="synthese" data-field="total" data-row="0">—</b> rentrent dans le budget de <b data-draw="budget">—</b> TTC par mois, tout compris. Les prix affichés ci-dessous sont convertis en coût réel TTC (TVA non récupérable, charges et taxe foncière incluses).</p>
+  </header>
+
+  <section class="kv-tiles" id="chiffres" aria-label="Chiffres clés">
+    <div class="kv-tile" id="tuile-total"><p class="kv-tile-label">Annonces suivies</p><p class="kv-tile-value" data-draw="n-total" data-source="synthese" data-field="total" data-row="0">—</p><p class="kv-tile-note">depuis le début de la veille</p></div>
+    <div class="kv-tile" id="tuile-budget"><p class="kv-tile-label">Dans le budget TTC</p><p class="kv-tile-value" data-draw="n-budget" data-source="synthese" data-field="dans_budget" data-row="0">—</p><p class="kv-tile-note">fourchette haute ≤ budget</p></div>
+    <div class="kv-tile" id="tuile-nouvelles"><p class="kv-tile-label">Nouvelles cette semaine</p><p class="kv-tile-value" data-draw="n-new" data-source="synthese" data-field="nouvelles" data-row="0">—</p><p class="kv-tile-note">dernière recherche</p></div>
+    <div class="kv-tile" id="tuile-moins-cher"><p class="kv-tile-label">Coût TTC le plus bas (piste)</p><p class="kv-tile-value" data-draw="n-best" data-source="synthese" data-field="moins_cher" data-row="0">—</p><p class="kv-tile-note">estimation par mois, tout compris</p></div>
+  </section>
+
+  <section class="kv-week" id="resume-semaine">
+    <h2 class="kv-h2">Résumé de la semaine</h2>
+    <p class="kv-week-date" data-draw="week-date">—</p>
+    <p class="kv-week-text" data-draw="week-text">—</p>
+    <details class="kv-hist" id="semaines-precedentes">
+      <summary>Semaines précédentes</summary>
+      <ul class="kv-hist-list" data-draw="week-hist"></ul>
+    </details>
+  </section>
+
+  <section id="annonces" style="display:grid;gap:var(--cds-gap-lg)">
+    <div class="kv-bar">
+      <div class="kv-filters" role="group" aria-label="Filtrer par statut">
+        <button type="button" class="kv-chipbtn" data-statut="actives" aria-pressed="true">Pistes et à surveiller</button>
+        <button type="button" class="kv-chipbtn" data-statut="Piste" aria-pressed="false">Pistes</button>
+        <button type="button" class="kv-chipbtn" data-statut="À surveiller" aria-pressed="false">À surveiller</button>
+        <button type="button" class="kv-chipbtn" data-statut="Écartée" aria-pressed="false">Écartées</button>
+        <button type="button" class="kv-chipbtn" data-statut="toutes" aria-pressed="false">Toutes</button>
+      </div>
+      <div class="kv-selects">
+        <label for="kv-commune">Commune
+          <select id="kv-commune" class="dash-select">
+            <option value="">Toutes</option>
+            <option value="Blagnac">Blagnac</option>
+            <option value="Seilh">Seilh</option>
+            <option value="Beauzelle">Beauzelle</option>
+          </select>
+        </label>
+        <label for="kv-tri">Ordre
+          <select id="kv-tri" class="dash-select">
+            <option value="asc">Plus anciennes d'abord</option>
+            <option value="desc">Plus récentes d'abord</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="kv-cards" data-draw="cards" data-source="annonces"></div>
+  </section>
+
+  <details class="kv-notes" id="methode">
+    <summary>Comment le prix TTC est estimé</summary>
+    <ul>
+      <li>Le cabinet ne récupère pas la TVA : un loyer affiché HT est multiplié par 1,2.</li>
+      <li>On ajoute les charges et la taxe foncière refacturée quand l'annonce ne les inclut pas. Si elles ne sont pas connues, on donne une fourchette (environ 2 à 3 € HT par m² et par mois).</li>
+      <li>Une annonce est « dans le budget » quand le haut de sa fourchette ne dépasse pas le budget.</li>
+      <li>Les données viennent des résultats de recherche web. Chaque montant reste à confirmer auprès de l'agence avant une visite.</li>
+    </ul>
+  </details>
+</div>
+
+<script>
+window.KV_BUDGET = 3500;
+window.KV = {
+  eur: (v) => v == null ? null : d3.format(",.0f")(v).replace(/,/g, " ") + " €",
+  parse: d3.utcParse("%Y-%m-%d"),
+  fmtDate: d3.utcFormat("%d/%m/%Y"),
+  state: { statut: "actives", commune: "", tri: "asc" },
+  dateOf: (r) => r.date_publication || r.date_trouvee || ""
+};
+
+dash.calc("synthese", {
+  title: "Synthèse des annonces",
+  description: "Nombre d'annonces suivies, dans le budget de 3 500 € TTC, nouvelles lors de la dernière recherche, et coût TTC le plus bas parmi les pistes.",
+  inputs: ["annonces"],
+  fn: (annonces) => {
+    const budget = 3500;
+    const last = annonces.reduce((m, r) => (r.date_trouvee > m ? r.date_trouvee : m), "");
+    const pistes = annonces.filter((r) => r.statut === "Piste" && r.ttc_min != null);
+    return [{
+      total: annonces.length,
+      dans_budget: annonces.filter((r) => r.ttc_max != null && r.ttc_max <= budget).length,
+      nouvelles: annonces.filter((r) => r.date_trouvee === last).length,
+      moins_cher: pistes.length ? d3.min(pistes, (r) => r.ttc_min) : null
+    }];
+  }
+});
+
+function kvSyn(field, el, fmt) {
+  const s = dash.data("synthese");
+  if (s.status !== "ok" || !s.data || !s.data[0]) { el.textContent = "—"; return; }
+  const v = s.data[0][field];
+  el.textContent = v == null ? "—" : (fmt ? fmt(v) : String(v));
+}
+dash.draw("budget", (el) => { el.textContent = KV.eur(window.KV_BUDGET); });
+dash.draw("t-budget", (el) => kvSyn("dans_budget", el));
+dash.draw("t-total", (el) => kvSyn("total", el));
+dash.draw("n-total", (el) => kvSyn("total", el));
+dash.draw("n-budget", (el) => kvSyn("dans_budget", el));
+dash.draw("n-new", (el) => kvSyn("nouvelles", el));
+dash.draw("n-best", (el) => kvSyn("moins_cher", el, KV.eur));
+</script>
+
+<script>
+(function () {
+  const sorted = () => {
+    const w = dash.data("semaines");
+    if (w.status !== "ok") return null;
+    return w.data.slice().sort((a, b) => d3.descending(a.semaine, b.semaine));
+  };
+  const label = (s) => { const d = KV.parse(s); return d ? "Recherche du " + KV.fmtDate(d) : s; };
+  dash.draw("week-date", (el) => {
+    const rows = sorted();
+    el.textContent = rows && rows[0] ? label(rows[0].semaine) : "—";
+  });
+  dash.draw("week-text", (el) => {
+    const rows = sorted();
+    el.textContent = rows && rows[0] ? rows[0].resume : "—";
+  });
+  dash.draw("week-hist", (el) => {
+    const rows = sorted();
+    el.replaceChildren();
+    if (!rows) return;
+    const older = rows.slice(1);
+    if (!older.length) {
+      const li = document.createElement("li");
+      li.textContent = "Aucune semaine précédente pour l'instant.";
+      el.append(li);
+      return;
+    }
+    older.forEach((r) => {
+      const li = document.createElement("li");
+      const d = document.createElement("span"); d.className = "d"; d.textContent = label(r.semaine);
+      const t = document.createElement("span"); t.textContent = r.resume;
+      li.append(d, t);
+      el.append(li);
+    });
+  });
+})();
+</script>
+
+<script>
+(function () {
+  const pressed = () => document.querySelectorAll(".kv-chipbtn[data-statut]");
+  pressed().forEach((b) => b.addEventListener("click", () => {
+    KV.state.statut = b.getAttribute("data-statut");
+    pressed().forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    dash.draw("cards");
+  }));
+  document.querySelectorAll("#kv-commune").forEach((s) => s.addEventListener("change", () => { KV.state.commune = s.value; dash.draw("cards"); }));
+  document.querySelectorAll("#kv-tri").forEach((s) => s.addEventListener("change", () => { KV.state.tri = s.value; dash.draw("cards"); }));
+
+  const mk = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const mark = (e, id, field) => { e.setAttribute("data-source", "annonces"); e.setAttribute("data-field", field); e.setAttribute("data-where", "id=" + encodeURIComponent(id)); return e; };
+  const statusCls = { "Piste": "ok", "À surveiller": "warn", "Écartée": "bad" };
+
+  function card(r, lastDate) {
+    const budget = window.KV_BUDGET;
+    const c = mk("article", "kv-card" + (r.statut === "Écartée" ? " is-out" : ""));
+    c.id = "annonce-" + r.id;
+
+    const ph = mk("div", "kv-photo");
+    const okPhoto = typeof r.photo === "string" && (r.photo.startsWith("data:image/") || r.photo.startsWith("/_blob/"));
+    if (okPhoto) {
+      const img = document.createElement("img");
+      img.src = r.photo; img.alt = "Photo : " + r.titre; img.loading = "lazy";
+      ph.append(img);
+    } else {
+      const box = mk("div", "kv-ph");
+      const s = mark(mk("span", "kv-ph-surface", String(r.surface_m2).replace(".", ",")), r.id, "surface_m2");
+      const sw = mk("div"); sw.append(s, document.createTextNode(" m²"));
+      box.append(sw, mk("span", "kv-ph-town", r.commune), mk("span", "kv-ph-note", "Photo à récupérer sur l'annonce"));
+      ph.append(box);
+    }
+    const tags = mk("div", "kv-photo-tags");
+    tags.append(mark(mk("span", "kv-pill " + (statusCls[r.statut] || ""), r.statut), r.id, "statut"));
+    if (r.date_trouvee === lastDate) tags.append(mk("span", "kv-pill new", "Nouveau"));
+    ph.append(tags);
+    c.append(ph);
+
+    const body = mk("div", "kv-body");
+    body.append(mark(mk("h3", "kv-card-title", r.titre), r.id, "titre"));
+    const d = KV.parse(KV.dateOf(r));
+    const meta = mk("p", "kv-meta");
+    meta.append(mark(mk("span", null, r.commune), r.id, "commune"), document.createTextNode(" · " + r.type_bien + " · "),
+      mark(mk("span", null, String(r.surface_m2).replace(".", ",")), r.id, "surface_m2"), document.createTextNode(" m² · " + (r.date_publication ? "publiée le " : "trouvée le ") + (d ? KV.fmtDate(d) : "?")));
+    body.append(meta);
+
+    const price = mk("div", "kv-price");
+    const main = mk("p", "kv-price-main");
+    if (r.ttc_min == null && r.ttc_max == null) {
+      main.append(document.createTextNode("Prix à demander"));
+    } else {
+      main.append(document.createTextNode("≈ "));
+      main.append(mark(mk("span", null, KV.eur(r.ttc_min)), r.id, "ttc_min"));
+      if (r.ttc_max != null && r.ttc_max !== r.ttc_min) {
+        main.append(document.createTextNode(" – "));
+        main.append(mark(mk("span", null, KV.eur(r.ttc_max)), r.id, "ttc_max"));
+      }
+      main.append(document.createTextNode(" "), mk("small", null, "TTC / mois tout compris"));
+    }
+    price.append(main);
+    if (r.ttc_min != null) {
+      const scaleMax = Math.max(budget * 1.5, r.ttc_max || 0);
+      const g = mk("div", "kv-gauge");
+      g.setAttribute("role", "img");
+      g.setAttribute("aria-label", "Coût estimé entre " + KV.eur(r.ttc_min) + " et " + KV.eur(r.ttc_max) + " pour un budget de " + KV.eur(budget));
+      const f = mk("div", "kv-gauge-fill");
+      const lo = r.ttc_min, hi = r.ttc_max != null ? r.ttc_max : r.ttc_min;
+      f.style.left = (lo / scaleMax * 100) + "%";
+      f.style.width = Math.max(1.5, (hi - lo) / scaleMax * 100) + "%";
+      f.style.background = hi <= budget ? "var(--color-ok)" : (lo <= budget ? "var(--color-warn)" : "var(--color-bad)");
+      const m = mk("div", "kv-gauge-mark"); m.style.left = (budget / scaleMax * 100) + "%";
+      g.append(f, m);
+      const leg = mk("div", "kv-gauge-legend");
+      const verdict = hi <= budget ? "Dans le budget" : (lo <= budget ? "Budget à confirmer" : "Hors budget");
+      leg.append(mk("span", null, verdict), mk("span", null, "Budget " + KV.eur(budget)));
+      price.append(g, leg);
+    }
+    const shown = mk("p", "kv-shown");
+    shown.append(document.createTextNode("Affiché : "), mark(mk("span", null, r.loyer_affiche), r.id, "loyer_affiche"), document.createTextNode(" — " + r.base_affichee));
+    price.append(shown);
+    body.append(price);
+
+    body.append(mark(mk("p", "kv-desc", r.resume), r.id, "resume"));
+    if (r.a_verifier) {
+      const chk = mk("p", "kv-check");
+      chk.append(mk("b", null, "À vérifier : "), mark(mk("span", null, r.a_verifier), r.id, "a_verifier"));
+      body.append(chk);
+    }
+    c.append(body);
+
+    const foot = mk("div", "kv-foot");
+    const left = mk("span");
+    left.append(document.createTextNode("Score "), mark(mk("b", null, String(r.score)), r.id, "score"), document.createTextNode("/100 · " + r.site + (r.verifie ? " · vérifiée" : " · non vérifiée")));
+    const a = mk("a", "kv-link", "Voir l'annonce ↗");
+    a.href = r.lien; a.target = "_blank"; a.rel = "noopener noreferrer";
+    foot.append(left, a);
+    c.append(foot);
+    return c;
+  }
+
+  dash.draw("cards", (el) => {
+    const q = dash.data("annonces");
+    el.replaceChildren();
+    if (q.status === "loading") { el.classList.add("dash-skeleton"); return; }
+    el.classList.remove("dash-skeleton");
+    if (q.status !== "ok") { if (q.status === "error") el.append(mk("p", "kv-fail", "Les annonces n'ont pas pu être chargées.")); else el.append(mk("p", "kv-empty", "—")); return; }
+    const s = KV.state;
+    const lastDate = q.data.reduce((m, r) => (r.date_trouvee > m ? r.date_trouvee : m), "");
+    let rows = q.data.filter((r) =>
+      (s.statut === "toutes" || (s.statut === "actives" ? r.statut !== "Écartée" : r.statut === s.statut)) &&
+      (!s.commune || r.commune === s.commune));
+    rows.sort((a, b) => {
+      const c = s.tri === "asc" ? d3.ascending(KV.dateOf(a), KV.dateOf(b)) : d3.descending(KV.dateOf(a), KV.dateOf(b));
+      return c || d3.descending(a.score, b.score);
+    });
+    if (!rows.length) { el.append(mk("p", "kv-empty", "Aucune annonce ne correspond à ces filtres.")); return; }
+    rows.forEach((r) => el.append(card(r, lastDate)));
+  });
+})();
+</script>

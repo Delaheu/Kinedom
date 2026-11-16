@@ -92,3 +92,5 @@ Un agent Claude Code cherche et suit les locaux à louer pour le cabinet : envir
 
 Utilisation dans Claude Code : « Utilise l'agent-immobilier pour chercher de nouvelles annonces »,
 « Analyse cette annonce : <lien> » ou « Prépare un mail pour l'agence de la piste n°1 ».
+
+**Tableau de bord hebdomadaire** : https://claude.ai/artifact/LG9cuX3S9StbP1QwPx9u6c. Chaque lundi à 7 h 38, une recherche automatique y ajoute les nouvelles annonces, classées de la plus ancienne à la plus récente, avec coût TTC tout compris, résumé et photo quand elle est récupérable.
